@@ -16,14 +16,14 @@ public class UserService {
     public ArrayList<UserDto> getAllUsers() {
         return (ArrayList<UserDto>) userRepository.findAll()
                 .stream()
-                .map(UserMapper::toDto)
+                .map(UserMapper::toUserDto)
                 .toList();
     }
 
     public ArrayList<UserDto> getUsersByPartOfLastName( String lastName) {
         return (ArrayList<UserDto>) userRepository.findUserByLastNameContainingIgnoreCase( lastName )
                 .stream()
-                .map(UserMapper::toDto)
+                .map(UserMapper::toUserDto)
                 .toList();
     }
 }

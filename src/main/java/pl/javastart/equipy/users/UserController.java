@@ -2,6 +2,7 @@ package pl.javastart.equipy.users;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,4 +30,14 @@ public class UserController {
         return list;
     }
 
+    @PostMapping("/api/users")
+    public List<UserDto> newUser(@RequestParam(required = false) NewUserDto newUserDto) {
+        List<UserDto> list = new ArrayList<>();
+        if (lastName==null) {
+            list = userService.getAllUsers();
+        } else {
+            list = userService.getUsersByPartOfLastName( lastName );
+        }
+        return list;
+    }
 }

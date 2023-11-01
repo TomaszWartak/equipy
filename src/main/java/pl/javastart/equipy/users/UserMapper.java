@@ -3,7 +3,7 @@ package pl.javastart.equipy.users;
 import org.modelmapper.ModelMapper;
 
 class UserMapper {
-    static UserDto toDto(User user) {
+    static UserDto toUserDto(User user) {
 /*        UserDto dto = new UserDto();
         dto.setId(user.getId());
         dto.setFirstName(user.getFirstName());
@@ -12,7 +12,7 @@ class UserMapper {
 //        return dto;
         return new ModelMapper().map( user, UserDto.class );
     }
-    static User toEntity(UserDto userDto) {
+    static User toUser(UserDto userDto) {
 /*        User entity = new User();
         entity.setId(userDto.getId());
         entity.setFirstName(userDto.getFirstName());
@@ -20,6 +20,10 @@ class UserMapper {
         entity.setPesel(userDto.getPesel());
         return entity;*/
         return new ModelMapper().map( userDto, User.class );
+    }
+
+    static User toUser(NewUserDto newUserDto) {
+        return new ModelMapper().map( newUserDto, User.class );
     }
 }
 
