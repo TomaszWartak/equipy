@@ -1,8 +1,11 @@
 package pl.javastart.equipy.users;
 
 import org.springframework.stereotype.Service;
+import pl.javastart.equipy.exceptions.DuplicatePeselException;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -17,13 +20,23 @@ public class UserService {
         return (ArrayList<UserDto>) userRepository.findAll()
                 .stream()
                 .map(UserMapper::toUserDto)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public ArrayList<UserDto> getUsersByPartOfLastName( String lastName) {
         return (ArrayList<UserDto>) userRepository.findUserByLastNameContainingIgnoreCase( lastName )
                 .stream()
                 .map(UserMapper::toUserDto)
-                .toList();
+                .collect(Collectors.toList());
+    }
+
+    public UserDto saveUser( UserDto userDto ) {
+        Optional<User> userByPesel = userRepository.findByPesel(userDto.getPesel());
+        userByPesel.ifPresent(u -> {
+            throw new DuplicatePeselException();
+        });
+        User user = UserMapper.toUser(userDto);
+        User savedUser = userRepository.save(user);
+        return UserMapper.toUserDto(savedUser);
     }
 }

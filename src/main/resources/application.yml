@@ -5,7 +5,7 @@ spring:
     console:
       enabled: true
   jpa:
-    show-sql: true
+    show-sql: true # Whether to enable logging of SQL statements.
     hibernate:
       ddl-auto: create-drop
     defer-datasource-initialization: true

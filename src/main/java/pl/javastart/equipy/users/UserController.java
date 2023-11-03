@@ -1,11 +1,13 @@
 package pl.javastart.equipy.users;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class UserController {
 
     @GetMapping("/api/users")
     public List<UserDto> getUsers(@RequestParam(required = false) String lastName) {
-        List<UserDto> list = new ArrayList<>();
+        List<UserDto> list;
         if (lastName==null) {
             list = userService.getAllUsers();
         } else {
@@ -31,13 +33,19 @@ public class UserController {
     }
 
     @PostMapping("/api/users")
-    public List<UserDto> newUser(@RequestParam(required = false) NewUserDto newUserDto) {
-        List<UserDto> list = new ArrayList<>();
-        if (lastName==null) {
-            list = userService.getAllUsers();
-        } else {
-            list = userService.getUsersByPartOfLastName( lastName );
+    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
+        if (userDto.getId() != null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Zapisywany obiekt nie może mieć ustawionego id"
+            );
         }
-        return list;
+        UserDto savedUser = userService.saveUser(userDto);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedUser.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(savedUser);
     }
 }

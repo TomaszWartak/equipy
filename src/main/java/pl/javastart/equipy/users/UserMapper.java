@@ -10,7 +10,7 @@ class UserMapper {
         dto.setLastName(user.getLastName());
         dto.setPesel(user.getPesel());*/
 //        return dto;
-        return new ModelMapper().map( user, UserDto.class );
+        return new ModelMapper().map(user, UserDto.class );
     }
     static User toUser(UserDto userDto) {
 /*        User entity = new User();
