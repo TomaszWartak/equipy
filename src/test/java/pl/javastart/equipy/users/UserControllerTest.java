@@ -9,24 +9,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     String jsonResponseEmpty ="[]";
 
@@ -77,6 +82,23 @@ class UserControllerTest {
             "    }\n" +
             "]";
 
+    String jsonResponseForId1 =
+/*            "[" +
+                "{" +
+                    "id: 1," +
+                    "\"firstName\": \"Jan\"," +
+                    "\"lastName\": \"Kowalski\"," +
+                    "\"pesel\": \"0123456789\"" +
+                "}"+
+            "]";*/
+
+            "{\n" +
+            "    \"id\": 1,\n" +
+            "    \"firstName\": \"Jan\",\n" +
+            "    \"lastName\": \"Kowalski\",\n" +
+            "    \"pesel\": \"0123456789\"\n" +
+            "}";
+
     String jsonRequestForNewUserProperData = "[\n" +
             "    {\n" +
             "        \"id\": 6,\n" +
@@ -97,6 +119,7 @@ class UserControllerTest {
     @Test
     void getUsers__should_return_empty_json_data__when_no_users_data_are_in_db() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
+        userRepository.deleteAll();
         mockMvc.perform(get("/api/users"))
                 .andExpect(content().json(jsonResponseEmpty ));
     }
@@ -123,7 +146,7 @@ class UserControllerTest {
     }
 
     @Test
-    void saveUser__should_return_201_and_user_json_data__after_data_are_saved() throws Exception {
+    void addUser__should_return_201_and_user_json_data__after_data_are_saved() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         UserDto userDto = new UserDto();
         userDto.setFirstName("John");
@@ -144,7 +167,7 @@ class UserControllerTest {
     }
 
     @Test
-    void saveUser__should_return_409__if_user_data_pesel_exists_in_db() throws Exception{
+    void addUser__should_return_409__if_user_data_pesel_exists_in_db() throws Exception{
         ObjectMapper objectMapper = new ObjectMapper();
         UserDto userDto = new UserDto();
         userDto.setFirstName("John");
@@ -161,7 +184,7 @@ class UserControllerTest {
                 .andExpect(status().is(409));
     }
     @Test
-    void saveUser__should_return_400__if_id_is_given_in_user_data() throws Exception{
+    void addUser__should_return_400__if_id_is_given_in_user_data() throws Exception{
         ObjectMapper objectMapper = new ObjectMapper();
         UserDto userDto = new UserDto();
         userDto.setId(7L);
@@ -177,5 +200,93 @@ class UserControllerTest {
                                 .content( jsonRequest )
                 )
                 .andExpect(status().is(400));    }
+
+    @Test
+    void getUser__should_return_200_and_Json_user_data__if_given_id_1_exists_in_db() throws Exception{
+        mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
+        MvcResult result = mockMvc.perform(get("/api/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonResponseForId1))
+                .andReturn();
+    }
+
+
+    @Test
+    void getUser__should_return_400__if_given_id_not_exist_in_db() throws Exception{
+        mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
+        MvcResult result = mockMvc.perform(get("/api/users/6"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
+
+    @Test
+    void updateUser__should_return_200_and_Json_user_data__when_data_saving_was_successful() throws Exception{
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserDto userDto = new UserDto();
+        userDto.setId(5L);
+        userDto.setFirstName("John");
+        userDto.setLastName("Rambo");
+        userDto.setPesel("00000000000");
+        String jsonRequest = objectMapper.writeValueAsString(userDto);
+        MvcResult result = mockMvc.perform(
+                put("/api/users/5" )
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content( jsonRequest )
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void updateUser__should_return_409__if_user_pesel_exists_in_db() throws Exception{
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserDto userDto = new UserDto();
+        userDto.setId(4L);
+        userDto.setFirstName("John");
+        userDto.setLastName("Rambo");
+        userDto.setPesel("4567890123");
+        String jsonRequest = objectMapper.writeValueAsString(userDto);
+        MvcResult result = mockMvc.perform(
+                        put("/api/users/5" )
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content( jsonRequest )
+                )
+                .andExpect(status().is(409))
+                .andReturn();
+    }
+
+    @Test
+    void updateUser__should_return_400__if_user_id_is_different_from_id_given_in_url() throws Exception{
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserDto userDto = new UserDto();
+        userDto.setId(4L);
+        userDto.setFirstName("John");
+        userDto.setLastName("Rambo");
+        userDto.setPesel("4567890123");
+        String jsonRequest = objectMapper.writeValueAsString(userDto);
+        MvcResult result = mockMvc.perform(
+                        put("/api/users/5" )
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content( jsonRequest )
+                )
+                .andExpect(status().is(400))
+                .andReturn();
+    }
+    @Test
+    void updateUser__should_return_400__if_user_id_is_not_given() throws Exception{
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserDto userDto = new UserDto();
+        userDto.setFirstName("John");
+        userDto.setLastName("Rambo");
+        userDto.setPesel("121212121212");
+        String jsonRequest = objectMapper.writeValueAsString(userDto);
+        MvcResult result = mockMvc.perform(
+                        put("/api/users/5" )
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content( jsonRequest )
+                )
+                .andExpect(status().is(400))
+                .andReturn();
+    }
 
 }

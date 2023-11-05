@@ -8,7 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,19 +32,39 @@ public class UserController {
     }
 
     @PostMapping("/api/users")
-    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
         if (userDto.getId() != null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Zapisywany obiekt nie może mieć ustawionego id"
+                    "Inny użytkownik z takim peselem już istnieje"
             );
         }
-        UserDto savedUser = userService.saveUser(userDto);
+        UserDto addedUser = userService.addUser(userDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(savedUser.getId())
+                .buildAndExpand(addedUser.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(savedUser);
+        return ResponseEntity.created(location).body(addedUser);
     }
+
+    @GetMapping("/api/users/{id}")
+    public ResponseEntity<UserDto> getUser( @PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/api/users/{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
+        if (userDto.getId()!=id) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Aktualizowany obiekt musi mieć id zgodne z id w ścieżce zasobu"
+            );
+        }
+        return ResponseEntity.ok(userService.updateUser(userDto));
+    }
+
+
 }

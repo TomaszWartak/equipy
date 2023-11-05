@@ -23,6 +23,10 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public Optional<UserDto> getUserById( Long id) {
+        return userRepository.findById( id ).map( UserMapper::toUserDto);
+    }
+
     public ArrayList<UserDto> getUsersByPartOfLastName( String lastName) {
         return (ArrayList<UserDto>) userRepository.findUserByLastNameContainingIgnoreCase( lastName )
                 .stream()
@@ -30,13 +34,24 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDto saveUser( UserDto userDto ) {
-        Optional<User> userByPesel = userRepository.findByPesel(userDto.getPesel());
-        userByPesel.ifPresent(u -> {
+    public UserDto addUser(UserDto userDtoToAdd ) {
+        Optional<User> userByPesel = userRepository.findByPesel(userDtoToAdd.getPesel());
+        userByPesel.ifPresent(user -> {
             throw new DuplicatePeselException();
         });
-        User user = UserMapper.toUser(userDto);
-        User savedUser = userRepository.save(user);
-        return UserMapper.toUserDto(savedUser);
+        User user = UserMapper.toUser(userDtoToAdd);
+        User addUser = userRepository.save(user);
+        return UserMapper.toUserDto(addUser);
+    }
+
+    public UserDto updateUser(UserDto userDtoToUpdate ) {
+        Optional<User> wrappedUserByPesel = userRepository.findByPesel(userDtoToUpdate.getPesel());
+        wrappedUserByPesel.ifPresent(user -> {
+            if (user.getId()!= userDtoToUpdate.getId()) {
+                throw new DuplicatePeselException();
+            }
+        });
+        User updatedUser = userRepository.save(UserMapper.toUser(userDtoToUpdate));
+        return UserMapper.toUserDto(updatedUser);
     }
 }
