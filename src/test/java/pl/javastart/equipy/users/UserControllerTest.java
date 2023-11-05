@@ -33,9 +33,9 @@ class UserControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    String jsonResponseEmpty ="[]";
+    private String jsonResponseEmpty ="[]";
 
-    String jsonResponseAllUsersData ="[\n" +
+    private String jsonResponseAllUsersData ="[\n" +
             "    {\n" +
             "        \"id\": 1,\n" +
             "        \"firstName\": \"Jan\",\n" +
@@ -241,10 +241,10 @@ class UserControllerTest {
     void updateUser__should_return_409__if_user_pesel_exists_in_db() throws Exception{
         ObjectMapper objectMapper = new ObjectMapper();
         UserDto userDto = new UserDto();
-        userDto.setId(4L);
+        userDto.setId(5L);
         userDto.setFirstName("John");
         userDto.setLastName("Rambo");
-        userDto.setPesel("4567890123");
+        userDto.setPesel("1234567890"); // ten pesel nalezy do użytkownika o id 2
         String jsonRequest = objectMapper.writeValueAsString(userDto);
         MvcResult result = mockMvc.perform(
                         put("/api/users/5" )
