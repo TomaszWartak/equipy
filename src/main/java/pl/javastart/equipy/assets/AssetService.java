@@ -3,6 +3,7 @@ package pl.javastart.equipy.assets;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Service
 public class AssetService {
@@ -13,7 +14,10 @@ public class AssetService {
         this.assetRepository = assetRepository;
     }
 
-    public ArrayList<Asset> getAllAssets() {
-        return (ArrayList<Asset>) assetRepository.findAll();
+    public ArrayList<AssetDto> getAllAssets() {
+        return (ArrayList<AssetDto>) assetRepository.findAll()
+                .stream()
+                .map(AssetMapper::toAssetDto)
+                .collect(Collectors.toList());
     }
 }

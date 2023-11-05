@@ -1,6 +1,7 @@
 package pl.javastart.equipy.assets;
 
 import jakarta.persistence.*;
+import pl.javastart.equipy.categories.Category;
 
 import java.util.Objects;
 
@@ -12,8 +13,11 @@ public class Asset {
     private Long id;
     private String name;
     private String description;
+    @Column(unique = true)
     private String serialNumber;
-    private String category;
+    @ManyToOne
+    /* todo @JoinColumn(name = "category_id")*/
+    private Category category;
 
     public Long getId() {
         return id;
@@ -47,11 +51,11 @@ public class Asset {
         this.serialNumber = serialNumber;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -73,7 +77,7 @@ public class Asset {
         private String name;
         private String description;
         private String serialNumber;
-        private String category;
+        private Category category;
 
         public AssetBuilder id(Long id) {
             this.id = id;
@@ -95,7 +99,7 @@ public class Asset {
             return this;
         }
 
-        public AssetBuilder category(String category) {
+        public AssetBuilder category(Category category) {
             this.category = category;
             return this;
         }
