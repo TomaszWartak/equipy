@@ -2,8 +2,11 @@ package pl.javastart.equipy.assets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.javastart.equipy.categories.Category;
-import pl.javastart.equipy.categories.CategoryRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -172,5 +174,19 @@ class AssetControllerTest {
                 .andReturn();
     }
 
+    @ParameterizedTest
+    @ValueSource( strings = {"App", "app"})
+    void getAssets__should_return_three_json_data__when_request_is_filtered_phrase_ignore_case( String textToSearch ) throws Exception {
+        ArrayList<AssetDto> filteredAssets = new ArrayList<>();
+        filteredAssets.add(assetsDtoData.get(1));
+        filteredAssets.add(assetsDtoData.get(3));
+        filteredAssets.add(assetsDtoData.get(4));
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonAssetsData = objectMapper.writeValueAsString(filteredAssets);
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssetController(assetService) ).build();
+        mockMvc.perform(get("/api/assets?text="+textToSearch ))
+                .andExpect(content().json(jsonAssetsData));
+    }
 
 }

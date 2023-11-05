@@ -20,4 +20,12 @@ public class AssetService {
                 .map(AssetMapper::toAssetDto)
                 .collect(Collectors.toList());
     }
+
+    public ArrayList<AssetDto> findAssetsWithNameOrSerialNumberContainingText( String textToFind ) {
+        return (ArrayList<AssetDto>) assetRepository.findByNameOrSerialNumber(textToFind)
+                .stream()
+                .map(AssetMapper::toAssetDto)
+                .collect(Collectors.toList());
+    }
+
 }
