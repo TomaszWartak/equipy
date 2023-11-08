@@ -1,8 +1,10 @@
 package pl.javastart.equipy.assets;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,4 +30,19 @@ public class AssetService {
                 .collect(Collectors.toList());
     }
 
+    public AssetDto saveAsset( AssetDto assetDto ) {
+        Optional<Asset> assetWrapped = assetRepository.findBySerialNumber( assetDto.getSerialNumber() );
+        assetWrapped.ifPresent(
+            aW -> {throw new DuplicateSerialNumberException();}
+        );
+        return AssetMapper.toAssetDto( assetRepository.save( AssetMapper.toAsset( assetDto )));
+    }
+
+    public AssetDto addAsset( AssetDto assetDtoToSave ) {
+        Optional<Asset> assetWrapped = assetRepository.findBySerialNumber( assetDtoToSave.getSerialNumber() );
+        assetWrapped.ifPresent(
+                aW -> {throw new DuplicateSerialNumberException( );}
+        );
+        return AssetMapper.toAssetDto( assetRepository.save( AssetMapper.toAsset( assetDtoToSave )));
+    }
 }

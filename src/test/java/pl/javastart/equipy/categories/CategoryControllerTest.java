@@ -12,14 +12,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pl.javastart.equipy.assets.AssetController;
-import pl.javastart.equipy.assets.AssetDto;
-import pl.javastart.equipy.assets.AssetService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,22 +77,37 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getAssets__should_return_200() throws Exception {
+    void getCategories__should_return_200() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new CategoryController(categoryService) ).build();
-        MvcResult result = mockMvc.perform(get("/api/categories"))
+        MvcResult result = mockMvc
+                .perform(get("/api/categories"))
                 .andExpect(status().isOk())
                 .andReturn();
     }
 
     @Test
-    void getAssets__should_return_all_assets_data__if_data_are_in_db() throws Exception {
+    void getCategories__should_return_all_categories_data__if_data_are_in_db() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonAssetsData = objectMapper.writeValueAsString(categoriesDtoData);
+        String jsonCategoriesData = objectMapper.writeValueAsString(categoriesDtoData);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new CategoryController(categoryService) ).build();
-        MvcResult MvcResult = mockMvc.perform(get("/api/categories"))
+        MvcResult MvcResult = mockMvc
+                .perform(get("/api/categories"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(jsonAssetsData))
+                .andExpect(content().json(jsonCategoriesData))
+                .andReturn();
+    }
+
+    @Test
+    void getCategoriesNames__should_return_all_categories_names__if_data_are_in_db() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonCategoriesNamesData = objectMapper.writeValueAsString(categoriesData.keySet());
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new CategoryController(categoryService) ).build();
+        MvcResult MvcResult = mockMvc
+                .perform(get("/api/categories/names"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonCategoriesNamesData))
                 .andReturn();
     }
 

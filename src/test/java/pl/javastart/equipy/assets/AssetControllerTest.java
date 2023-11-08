@@ -10,17 +10,20 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.javastart.equipy.categories.Category;
+import pl.javastart.equipy.users.UserDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -157,7 +160,8 @@ class AssetControllerTest {
     @Test
     void getAssets__should_return_200() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new AssetController(assetService) ).build();
-        MvcResult result = mockMvc.perform(get("/api/assets"))
+        MvcResult result = mockMvc
+                .perform(get("/api/assets"))
                 .andExpect(status().isOk())
                 .andReturn();
     }
@@ -168,7 +172,8 @@ class AssetControllerTest {
         String jsonAssetsData = objectMapper.writeValueAsString(assetsDtoData);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new AssetController(assetService) ).build();
-        MvcResult result = mockMvc.perform(get("/api/assets"))
+        MvcResult result = mockMvc
+                .perform(get("/api/assets"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonAssetsData))
                 .andReturn();
@@ -185,8 +190,72 @@ class AssetControllerTest {
         String jsonAssetsData = objectMapper.writeValueAsString(filteredAssets);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new AssetController(assetService) ).build();
-        mockMvc.perform(get("/api/assets?text="+textToSearch ))
-                .andExpect(content().json(jsonAssetsData));
+        MvcResult result = mockMvc
+                .perform(get("/api/assets?text="+textToSearch ))
+                .andExpect(content().json(jsonAssetsData))
+                .andReturn();
     }
 
+    @Test
+    void addAsset__should_return_201_and_added_asset_json_data__after_data_are_saved() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        AssetDto assetDto = new AssetDto();
+        assetDto.setName("Volkswagen Polo");
+        assetDto.setDescription("Polo 4d 1.9TDI");
+        assetDto.setSerialNumber("VINWXC98909809");
+        assetDto.setCategoryName("Pojazdy");
+        String postRequestAssetJsonData = objectMapper.writeValueAsString(assetDto);
+        assetDto.setId(6L);
+        String jsonResponse = objectMapper.writeValueAsString(assetDto);
+        MvcResult result = mockMvc
+                .perform(
+                        post( "/api/assets")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content( postRequestAssetJsonData )
+                )
+                .andExpect(status().is(201))
+                .andExpect(content().json(jsonResponse))
+                .andReturn();
+    }
+
+    @Test
+    void addAsset__should_return_409__when_asset_serial_number_exists_in_db() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        AssetDto assetDto = AssetDto.builder()
+                .name("Volkswagen Polo")
+                .description("Polo 4d 1.9TDI")
+                .serialNumber("VINDI3576XO526716")
+                .categoryName("Pojazdy")
+                .build();
+        String postRequestAssetJsonData = objectMapper.writeValueAsString(assetDto);
+        MvcResult result = mockMvc
+                .perform(
+                        post( "/api/assets")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content( postRequestAssetJsonData )
+                )
+                .andExpect(status().is(409))
+                .andReturn();
+    }
+
+    @Test
+    void addAsset__should_return_400__if_id_is_given_in_asset_data() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        AssetDto assetDto = AssetDto.builder()
+                .id(6L)
+                .name("Volkswagen Polo")
+                .description("Polo 4d 1.9TDI")
+                .serialNumber("VINWXC98909809")
+                .categoryName("Pojazdy")
+                .build();
+        String postRequestAssetJsonData = objectMapper.writeValueAsString(assetDto);
+        MvcResult result = mockMvc
+                .perform(
+                        post( "/api/assets")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content( postRequestAssetJsonData )
+                )
+                .andExpect(status().is(400))
+                .andReturn();
+    }
 }

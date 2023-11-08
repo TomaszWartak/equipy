@@ -112,7 +112,8 @@ class UserControllerTest {
     @Test
     void getUsers__should_return_200() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
-        mockMvc.perform(get("/api/users"))
+        mockMvc
+                .perform(get("/api/users"))
                 .andExpect(status().isOk());
     }
 
@@ -120,28 +121,32 @@ class UserControllerTest {
     void getUsers__should_return_empty_json_data__when_no_users_data_are_in_db() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
         userRepository.deleteAll();
-        mockMvc.perform(get("/api/users"))
+        mockMvc
+                .perform(get("/api/users"))
                 .andExpect(content().json(jsonResponseEmpty ));
     }
 
     @Test
     void getUsers__should_return_five_json_data__when_all_users_data_are_in_db() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
-        mockMvc.perform(get("/api/users"))
+        mockMvc
+                .perform(get("/api/users"))
                 .andExpect(content().json(jsonResponseAllUsersData));
     }
 
     @Test
     void getUsers__should_return_two_json_data__when_request_is_filtered_ski_phrase() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
-        mockMvc.perform(get("/api/users?lastName=Ski"))
+        mockMvc
+                .perform(get("/api/users?lastName=Ski"))
                 .andExpect(content().json(jsonResponseForSkiPhrase));
     }
 
     @Test
     void getUsers__should_return_all_json_data__when_request_is_filtered_empty_phrase() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
-        mockMvc.perform( get("/api/users?lastName=") )
+        mockMvc
+                .perform( get("/api/users?lastName=") )
                 .andExpect(content().json(jsonResponseAllUsersData));
     }
 
@@ -204,7 +209,8 @@ class UserControllerTest {
     @Test
     void getUser__should_return_200_and_Json_user_data__if_given_id_1_exists_in_db() throws Exception{
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
-        MvcResult result = mockMvc.perform(get("/api/users/1"))
+        MvcResult result = mockMvc
+                .perform(get("/api/users/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonResponseForId1))
                 .andReturn();
@@ -214,7 +220,8 @@ class UserControllerTest {
     @Test
     void getUser__should_return_400__if_given_id_not_exist_in_db() throws Exception{
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
-        MvcResult result = mockMvc.perform(get("/api/users/6"))
+        MvcResult result = mockMvc
+                .perform(get("/api/users/6"))
                 .andExpect(status().isNotFound())
                 .andReturn();
     }
@@ -228,8 +235,8 @@ class UserControllerTest {
         userDto.setLastName("Rambo");
         userDto.setPesel("00000000000");
         String jsonRequest = objectMapper.writeValueAsString(userDto);
-        MvcResult result = mockMvc.perform(
-                put("/api/users/5" )
+        MvcResult result = mockMvc
+                .perform( put("/api/users/5" )
                     .contentType(MediaType.APPLICATION_JSON)
                     .content( jsonRequest )
                 )
@@ -246,7 +253,8 @@ class UserControllerTest {
         userDto.setLastName("Rambo");
         userDto.setPesel("1234567890"); // ten pesel nalezy do użytkownika o id 2
         String jsonRequest = objectMapper.writeValueAsString(userDto);
-        MvcResult result = mockMvc.perform(
+        MvcResult result = mockMvc
+                .perform(
                         put("/api/users/5" )
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content( jsonRequest )
@@ -264,7 +272,8 @@ class UserControllerTest {
         userDto.setLastName("Rambo");
         userDto.setPesel("4567890123");
         String jsonRequest = objectMapper.writeValueAsString(userDto);
-        MvcResult result = mockMvc.perform(
+        MvcResult result = mockMvc
+                .perform(
                         put("/api/users/5" )
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content( jsonRequest )
@@ -280,7 +289,8 @@ class UserControllerTest {
         userDto.setLastName("Rambo");
         userDto.setPesel("121212121212");
         String jsonRequest = objectMapper.writeValueAsString(userDto);
-        MvcResult result = mockMvc.perform(
+        MvcResult result = mockMvc
+                .perform(
                         put("/api/users/5" )
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content( jsonRequest )

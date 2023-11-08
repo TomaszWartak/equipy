@@ -1,12 +1,34 @@
 package pl.javastart.equipy.assets;
 
-import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+import pl.javastart.equipy.categories.CategoryRepository;
 
+@Service
 public class AssetMapper {
+
+    private static CategoryRepository categoryRepository;
+
+    private AssetMapper(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
+
     static AssetDto toAssetDto(Asset asset) {
-        return new ModelMapper().map(asset, AssetDto.class );
+        return AssetDto.builder()
+                .id(asset.getId())
+                .name( asset.getName() )
+                .description( asset.getDescription() )
+                .serialNumber( asset.getSerialNumber() )
+                .categoryName( asset.getCategory()!=null ?asset.getCategory().getName() :null)
+                .build();
     }
     static Asset toAsset(AssetDto assetDto) {
-        return new ModelMapper().map( assetDto, Asset.class );
+        Asset asset = Asset.builder()
+                .id( assetDto.getId() )
+                .name( assetDto.getName() )
+                .description( assetDto.getDescription() )
+                .serialNumber( assetDto.getSerialNumber() )
+                .build();
+        categoryRepository.findByName( assetDto.getCategoryName() ).ifPresent(asset::setCategory);
+        return asset;
     }
 }

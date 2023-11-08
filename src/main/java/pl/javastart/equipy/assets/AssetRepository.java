@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AssetRepository extends JpaRepository<Asset, Long> {
@@ -18,5 +19,7 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
 
     @Query( "SELECT a FROM Asset a WHERE (a.name) LIKE '%App%' OR (a.serialNumber) LIKE '%App%'" )
     List<Asset> findByNameOrSerialNumber2();
+
+    Optional<Asset> findBySerialNumber(String serialNumber);
 
 }

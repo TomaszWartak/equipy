@@ -1,7 +1,5 @@
 package pl.javastart.equipy.assets;
 
-import pl.javastart.equipy.categories.Category;
-
 public class AssetDto {
 
     private Long id;
@@ -50,4 +48,52 @@ public class AssetDto {
         this.categoryName = categoryName;
     }
 
+
+    public static class AssetDtoBuilder {
+        private Long id;
+        private String name;
+        private String description;
+        private String serialNumber;
+        private String categoryName;
+
+        public AssetDtoBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public AssetDtoBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public AssetDtoBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public AssetDtoBuilder serialNumber(String serialNumber) {
+            this.serialNumber = serialNumber;
+            return this;
+        }
+
+        public AssetDtoBuilder categoryName(String category) {
+            this.categoryName = category;
+            return this;
+        }
+
+        public AssetDto build() {
+            AssetDto assetDto = new AssetDto();
+            assetDto.id = this.id;
+            assetDto.name = this.name;
+            assetDto.description = this.description;
+            assetDto.serialNumber = this.serialNumber;
+            assetDto.categoryName = this.categoryName;
+            return assetDto;
+        }
+    }
+
+    public static AssetDtoBuilder builder() {
+        return new AssetDtoBuilder();
+    }
+    
 }

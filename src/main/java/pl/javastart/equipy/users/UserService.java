@@ -1,7 +1,6 @@
 package pl.javastart.equipy.users;
 
 import org.springframework.stereotype.Service;
-import pl.javastart.equipy.exceptions.DuplicatePeselException;
 
 import java.util.ArrayList;
 import java.util.Optional;
