@@ -2,7 +2,6 @@ package pl.javastart.equipy.assets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.javastart.equipy.categories.Category;
-import pl.javastart.equipy.users.UserDto;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,30 +41,6 @@ class AssetControllerTest {
     private static ArrayList<AssetDto> assetsDtoData = new ArrayList<>();
     private static HashMap<String,Category> categoriesData = new HashMap<>();
 
-    /*private String jsonResponseForGetAll = "[\n" +
-            "    {\n" +
-            "        \"id\": 1,\n" +
-            "        \"name\": \"Asus MateBook D\",\n" +
-            "        \"description\": \"15 calowy laptop, i5, 8GB DDR3, kolor czarny\",\n" +
-            "        \"serialNumber\": \"ASMBD198723\",\n" +
-            "        \"category\": \"Laptopy\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\": 2,\n" +
-            "        \"name\": \"Apple MacBook Pro 2015\",\n" +
-            "        \"description\": \"13 calowy laptop, i5, 16GB DDR3, SSD256GB, kolor srebrny\",\n" +
-            "        \"serialNumber\": \"MBP15X0925336\",\n" +
-            "        \"category\": \"Laptopy\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\": 3,\n" +
-            "        \"name\": \"Dell Inspirion 3576\",\n" +
-            "        \"description\": \"13 calowy laptop, i7, 8GB DDR4, SSD 512GB, kolor czarny\",\n" +
-            "        \"serialNumber\": \"DI3576XO526716\",\n" +
-            "        \"category\": \"Pojazdy\"\n" +
-            "    }\n" +
-            "]";
-*/
     @BeforeAll
     static void prepareExpectedData(){
         prepareCategoriesData();
@@ -199,11 +173,12 @@ class AssetControllerTest {
     @Test
     void addAsset__should_return_201_and_added_asset_json_data__after_data_are_saved() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        AssetDto assetDto = new AssetDto();
-        assetDto.setName("Volkswagen Polo");
-        assetDto.setDescription("Polo 4d 1.9TDI");
-        assetDto.setSerialNumber("VINWXC98909809");
-        assetDto.setCategoryName("Pojazdy");
+        AssetDto assetDto = AssetDto.builder()
+                .name("Volkswagen Polo")
+                .description("Polo 4d 1.9TDI")
+                .serialNumber("VINWXC98909809")
+                .categoryName("Pojazdy")
+                .build();
         String postRequestAssetJsonData = objectMapper.writeValueAsString(assetDto);
         assetDto.setId(6L);
         String jsonResponse = objectMapper.writeValueAsString(assetDto);
@@ -256,6 +231,26 @@ class AssetControllerTest {
                                 .content( postRequestAssetJsonData )
                 )
                 .andExpect(status().is(400))
+                .andReturn();
+    }
+
+    @Test
+    void getAsset__should_return_200_and_Json_asset_data__if_given_id_exists_in_db() throws Exception{
+        AssetDto assetDto = assetsDtoData.get(0);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String getResultAssetJsonData = objectMapper.writeValueAsString( assetDto );
+        MvcResult result = mockMvc
+                .perform( get("/api/assets/"+assetDto.getId() ) )
+                .andExpect(status().isOk())
+                .andExpect(content().json(getResultAssetJsonData))
+                .andReturn();
+    }
+    @ParameterizedTest
+    @ValueSource( longs = {0L, 6L})
+    void getAsset__should_return_404__if_given_id_doesnt_exist_in_db( Long id ) throws Exception{
+        MvcResult result = mockMvc
+                .perform( get("/api/assets/"+id ) )
+                .andExpect( status().isNotFound() )
                 .andReturn();
     }
 }

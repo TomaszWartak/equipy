@@ -1,6 +1,5 @@
 package pl.javastart.equipy.assets;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +15,14 @@ public class AssetService {
         this.assetRepository = assetRepository;
     }
 
+    public AssetDto addAsset( AssetDto assetDtoToSave ) {
+        Optional<Asset> assetWrapped = assetRepository.findBySerialNumber( assetDtoToSave.getSerialNumber() );
+        assetWrapped.ifPresent(
+                aW -> {throw new DuplicateSerialNumberException( );}
+        );
+        return AssetMapper.toAssetDto( assetRepository.save( AssetMapper.toAsset( assetDtoToSave )));
+    }
+
     public ArrayList<AssetDto> getAllAssets() {
         return (ArrayList<AssetDto>) assetRepository.findAll()
                 .stream()
@@ -23,7 +30,11 @@ public class AssetService {
                 .collect(Collectors.toList());
     }
 
-    public ArrayList<AssetDto> findAssetsWithNameOrSerialNumberContainingText( String textToFind ) {
+    public Optional<AssetDto> getAsset( Long id) {
+        return assetRepository.findById( id ).map( AssetMapper::toAssetDto );
+    }
+
+    public ArrayList<AssetDto> getAssetsWithNameOrSerialNumberContainingText(String textToFind ) {
         return (ArrayList<AssetDto>) assetRepository.findByNameOrSerialNumber(textToFind)
                 .stream()
                 .map(AssetMapper::toAssetDto)
@@ -38,11 +49,4 @@ public class AssetService {
         return AssetMapper.toAssetDto( assetRepository.save( AssetMapper.toAsset( assetDto )));
     }
 
-    public AssetDto addAsset( AssetDto assetDtoToSave ) {
-        Optional<Asset> assetWrapped = assetRepository.findBySerialNumber( assetDtoToSave.getSerialNumber() );
-        assetWrapped.ifPresent(
-                aW -> {throw new DuplicateSerialNumberException( );}
-        );
-        return AssetMapper.toAssetDto( assetRepository.save( AssetMapper.toAsset( assetDtoToSave )));
-    }
 }

@@ -2,7 +2,6 @@ package pl.javastart.equipy.users;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,17 +16,6 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @GetMapping("/api/users")
-    public List<UserDto> getUsers(@RequestParam(required = false) String lastName) {
-        List<UserDto> list;
-        if (lastName==null) {
-            list = userService.getAllUsers();
-        } else {
-            list = userService.getUsersByPartOfLastName( lastName );
-        }
-        return list;
     }
 
     @PostMapping("/api/users")
@@ -48,10 +36,21 @@ public class UserController {
     }
 
     @GetMapping("/api/users/{id}")
-    public ResponseEntity<UserDto> getUser( @PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/api/users")
+    public List<UserDto> getUsers(@RequestParam(required = false) String lastName) {
+        List<UserDto> list;
+        if (lastName==null) {
+            list = userService.getAllUsers();
+        } else {
+            list = userService.getUsersByPartOfLastName( lastName );
+        }
+        return list;
     }
 
     @PutMapping("/api/users/{id}")

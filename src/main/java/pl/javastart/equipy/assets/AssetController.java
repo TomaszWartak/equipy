@@ -8,6 +8,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class AssetController {
@@ -23,9 +24,15 @@ public class AssetController {
         if (text ==null) {
             return assetService.getAllAssets();
         } else {
-            return assetService.findAssetsWithNameOrSerialNumberContainingText(text);
+            return assetService.getAssetsWithNameOrSerialNumberContainingText(text);
         }
+    }
 
+    @GetMapping("/api/assets/{id}")
+    public ResponseEntity<AssetDto> getAssetById(@PathVariable Long id ) {
+        return assetService.getAsset( id )
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/api/assets")
