@@ -8,7 +8,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class AssetController {
@@ -51,4 +50,18 @@ public class AssetController {
                 .toUri();
         return ResponseEntity.created(location).body(assetDtoAdded);
     }
+
+    @PutMapping("/api/assets/{id}")
+    public ResponseEntity<AssetDto> updateAsset(@RequestBody AssetDto assetDtoToUpdate, @PathVariable Long id) {
+        if (!id.equals(assetDtoToUpdate.getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Aktualizowany obiekt musi mieć id zgodne z id w ścieżce zasobu"
+            );
+        }
+        AssetDto assetUpdated = assetService.updateAsset( assetDtoToUpdate );
+        return ResponseEntity.ok(assetUpdated);
+    }
+
+
 }

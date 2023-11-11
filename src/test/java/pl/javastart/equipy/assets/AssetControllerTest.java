@@ -1,7 +1,7 @@
 package pl.javastart.equipy.assets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,8 +20,7 @@ import pl.javastart.equipy.categories.Category;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,16 +37,17 @@ class AssetControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private AssetService assetService;
-    private static ArrayList<AssetDto> assetsDtoData = new ArrayList<>();
-    private static HashMap<String,Category> categoriesData = new HashMap<>();
+    private ArrayList<AssetDto> assetsDtoData;
+    private HashMap<String,Category> categoriesData;
 
-    @BeforeAll
-    static void prepareExpectedData(){
+    @BeforeEach
+    void prepareExpectedData(){
         prepareCategoriesData();
         prepareAssetsDtoData();
     }
 
-    private static void prepareCategoriesData() {
+    private void prepareCategoriesData() {
+        categoriesData = new HashMap<>();
         categoriesData.put(
             "Laptopy",
              Category.builder()
@@ -73,7 +73,8 @@ class AssetControllerTest {
                     .build()
         );}
 
-    private static void prepareAssetsDtoData() {
+    private void prepareAssetsDtoData() {
+        assetsDtoData = new ArrayList<>();
         assetsDtoData.add(
             AssetMapper.toAssetDto(
                 Asset.builder()
@@ -253,4 +254,83 @@ class AssetControllerTest {
                 .andExpect( status().isNotFound() )
                 .andReturn();
     }
+
+    @Test
+    void updateAsset__should_return_200_and_Json_asset_data__when_data_saving_was_successful() throws Exception{
+        AssetDto assetDto = assetsDtoData.get(2);
+        assetDto.setName( assetDto.getName()+" 4x4");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonRequest = objectMapper.writeValueAsString(assetDto);
+        String jsonResponse = jsonRequest;
+
+        MvcResult result = mockMvc
+                .perform( put("/api/assets/"+assetDto.getId() )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content( jsonRequest )
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonResponse))
+                .andReturn();
+    }
+
+    @Test
+    void updateAsset__should_return_400__if_asset_id_is_different_from_id_given_in_url() throws Exception{
+        String jsonRequest = new ObjectMapper().writeValueAsString(assetsDtoData.get(0));
+
+        MvcResult result = mockMvc
+                .perform( put("/api/assets/3" )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content( jsonRequest )
+                )
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    void updateAsset__should_return_400__if_asset_id_is_null() throws Exception{
+        AssetDto assetDtoToSave = assetsDtoData.get(0);
+        assetDtoToSave.setId(null);
+        String jsonRequest = new ObjectMapper().writeValueAsString(assetDtoToSave);
+
+        MvcResult result = mockMvc
+                .perform( put("/api/assets/3" )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content( jsonRequest )
+                )
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @ParameterizedTest
+    @ValueSource( longs = {0L, -1L, -1000L})
+    void updateAsset__should_return_400__if_asset_id_is_less_then_1( Long assetId ) throws Exception{
+        AssetDto assetDtoToSave = assetsDtoData.get(0);
+        assetDtoToSave.setId(assetId);
+        String jsonRequest = new ObjectMapper().writeValueAsString(assetDtoToSave);
+
+        MvcResult result = mockMvc
+                .perform( put("/api/assets/3" )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content( jsonRequest )
+                )
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    void updateAsset__should_return_409__if_asset_serial_number_exists_in_other_asset_in_db( ) throws Exception{
+        AssetDto assetDtoToSave = assetsDtoData.get(0);
+        AssetDto otherAsset = assetsDtoData.get(1);
+        assetDtoToSave.setSerialNumber( otherAsset.getSerialNumber() );
+        String jsonRequest = new ObjectMapper().writeValueAsString(assetDtoToSave);
+
+        MvcResult result = mockMvc
+                .perform( put("/api/assets/1" )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content( jsonRequest )
+                )
+                .andExpect(status().isConflict())
+                .andReturn();
+    }
+
 }

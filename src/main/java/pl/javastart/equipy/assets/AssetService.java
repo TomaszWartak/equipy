@@ -41,12 +41,19 @@ public class AssetService {
                 .collect(Collectors.toList());
     }
 
-    public AssetDto saveAsset( AssetDto assetDto ) {
-        Optional<Asset> assetWrapped = assetRepository.findBySerialNumber( assetDto.getSerialNumber() );
-        assetWrapped.ifPresent(
-            aW -> {throw new DuplicateSerialNumberException();}
+    public AssetDto updateAsset(AssetDto assetDtoToUpdate ) {
+        Optional<Asset> assetFromDbWrapped = assetRepository.findBySerialNumber( assetDtoToUpdate.getSerialNumber() );
+        assetFromDbWrapped.ifPresent(
+                aW -> {
+                    if (assetsHaveDifferentIds( aW, assetDtoToUpdate )) throw new DuplicateSerialNumberException( );
+                }
         );
-        return AssetMapper.toAssetDto( assetRepository.save( AssetMapper.toAsset( assetDto )));
+        return AssetMapper.toAssetDto( assetRepository.save( AssetMapper.toAsset( assetDtoToUpdate )));
     }
+
+    private boolean assetsHaveDifferentIds(Asset aW, AssetDto assetDtoToUpdate ) {
+        return !(aW.getId().equals(assetDtoToUpdate.getId()));
+    }
+
 
 }

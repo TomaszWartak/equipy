@@ -55,7 +55,7 @@ public class UserController {
 
     @PutMapping("/api/users/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-        if (userDto.getId()!=id) {
+        if (userDto.getId().equals(id)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Aktualizowany obiekt musi mieć id zgodne z id w ścieżce zasobu"
