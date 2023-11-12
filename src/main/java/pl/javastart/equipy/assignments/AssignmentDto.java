@@ -1,24 +1,16 @@
-package pl.javastart.equipy.rentals;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+package pl.javastart.equipy.assignments;
 
 import java.time.ZonedDateTime;
-import java.util.Objects;
 
-@Entity
-public class Assignment {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AssignmentDto {
     private Long id;
     private ZonedDateTime start;
     private ZonedDateTime end;
     private Long assetId;
     private String assetName;
     private String assetSerialNumber;
+
+    // Gettery i settery
 
     public Long getId() {
         return id;
@@ -68,20 +60,7 @@ public class Assignment {
         this.assetSerialNumber = assetSerialNumber;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Assignment that = (Assignment) o;
-        return Objects.equals(id, that.id) && Objects.equals(start, that.start) && Objects.equals(end, that.end) && Objects.equals(assetId, that.assetId) && Objects.equals(assetName, that.assetName) && Objects.equals(assetSerialNumber, that.assetSerialNumber);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, start, end, assetId, assetName, assetSerialNumber);
-    }
-
-    public class AssignmentBuilder {
+    public class AssignmentDtoBuilder {
 
         private Long id;
         private ZonedDateTime start;
@@ -90,45 +69,45 @@ public class Assignment {
         private String assetName;
         private String assetSerialNumber;
 
-        public AssignmentBuilder withId(Long id) {
+        public AssignmentDtoBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public AssignmentBuilder withStart(ZonedDateTime start) {
+        public AssignmentDtoBuilder start(ZonedDateTime start) {
             this.start = start;
             return this;
         }
 
-        public AssignmentBuilder withEnd(ZonedDateTime end) {
+        public AssignmentDtoBuilder end(ZonedDateTime end) {
             this.end = end;
             return this;
         }
 
-        public AssignmentBuilder withAssetId(Long assetId) {
+        public AssignmentDtoBuilder assetId(Long assetId) {
             this.assetId = assetId;
             return this;
         }
 
-        public AssignmentBuilder withAssetName(String assetName) {
+        public AssignmentDtoBuilder assetName(String assetName) {
             this.assetName = assetName;
             return this;
         }
 
-        public AssignmentBuilder withAssetSerialNumber(String assetSerialNumber) {
+        public AssignmentDtoBuilder assetSerialNumber(String assetSerialNumber) {
             this.assetSerialNumber = assetSerialNumber;
             return this;
         }
 
-        public Assignment build() {
-            Assignment assignment = new Assignment();
-            assignment.setId(this.id);
-            assignment.setStart(this.start);
-            assignment.setEnd(this.end);
-            assignment.setAssetId(this.assetId);
-            assignment.setAssetName(this.assetName);
-            assignment.setAssetSerialNumber(this.assetSerialNumber);
-            return assignment;
+        public AssignmentDto build() {
+            AssignmentDto assignmentDto = new AssignmentDto();
+            assignmentDto.setId(this.id);
+            assignmentDto.setStart(this.start);
+            assignmentDto.setEnd(this.end);
+            assignmentDto.setAssetId(this.assetId);
+            assignmentDto.setAssetName(this.assetName);
+            assignmentDto.setAssetSerialNumber(this.assetSerialNumber);
+            return assignmentDto;
         }
     }
 }
