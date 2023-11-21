@@ -4,8 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import pl.javastart.equipy.assets.Asset;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -14,8 +16,8 @@ public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private ZonedDateTime start;
-    private ZonedDateTime end;
+    private LocalDateTime start;
+    private LocalDateTime end; 
     private Long userId; // todo dodaj get set i map
     private Long assetId;
     private String assetName;
@@ -29,19 +31,19 @@ public class Assignment {
         this.id = id;
     }
 
-    public ZonedDateTime getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(ZonedDateTime start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public ZonedDateTime getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(ZonedDateTime end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 
@@ -90,11 +92,11 @@ public class Assignment {
         return Objects.hash(id, start, end, assetId, assetName, assetSerialNumber);
     }
 
-    public class AssignmentBuilder {
+    public static class AssignmentBuilder {
 
         private Long id;
-        private ZonedDateTime start;
-        private ZonedDateTime end;
+        private LocalDateTime start;
+        private LocalDateTime end;
         private Long userId;
         private Long assetId;
         private String assetName;
@@ -105,12 +107,12 @@ public class Assignment {
             return this;
         }
 
-        public AssignmentBuilder start(ZonedDateTime start) {
+        public AssignmentBuilder start(LocalDateTime start) {
             this.start = start;
             return this;
         }
 
-        public AssignmentBuilder end(ZonedDateTime end) {
+        public AssignmentBuilder end(LocalDateTime end) {
             this.end = end;
             return this;
         }
@@ -139,10 +141,16 @@ public class Assignment {
             assignment.setId(this.id);
             assignment.setStart(this.start);
             assignment.setEnd(this.end);
+            assignment.setUserId(this.userId);
             assignment.setAssetId(this.assetId);
             assignment.setAssetName(this.assetName);
             assignment.setAssetSerialNumber(this.assetSerialNumber);
             return assignment;
         }
     }
+
+    public static AssignmentBuilder builder() {
+        return new AssignmentBuilder();
+    }
+
 }

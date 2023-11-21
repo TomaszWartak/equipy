@@ -1,11 +1,12 @@
 package pl.javastart.equipy.assignments;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public class AssignmentDto {
     private Long id;
-    private ZonedDateTime start;
-    private ZonedDateTime end;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private Long userId;
     private Long assetId;
     private String assetName;
     private String assetSerialNumber;
@@ -20,20 +21,28 @@ public class AssignmentDto {
         this.id = id;
     }
 
-    public ZonedDateTime getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(ZonedDateTime start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public ZonedDateTime getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(ZonedDateTime end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getAssetId() {
@@ -63,8 +72,9 @@ public class AssignmentDto {
     public class AssignmentDtoBuilder {
 
         private Long id;
-        private ZonedDateTime start;
-        private ZonedDateTime end;
+        private LocalDateTime start;
+        private LocalDateTime end;
+        private Long userId;
         private Long assetId;
         private String assetName;
         private String assetSerialNumber;
@@ -74,16 +84,20 @@ public class AssignmentDto {
             return this;
         }
 
-        public AssignmentDtoBuilder start(ZonedDateTime start) {
+        public AssignmentDtoBuilder start(LocalDateTime start) {
             this.start = start;
             return this;
         }
 
-        public AssignmentDtoBuilder end(ZonedDateTime end) {
+        public AssignmentDtoBuilder end(LocalDateTime end) {
             this.end = end;
             return this;
         }
 
+        public AssignmentDtoBuilder userId(Long userId) {
+            this.assetId = userId;
+            return this;
+        }
         public AssignmentDtoBuilder assetId(Long assetId) {
             this.assetId = assetId;
             return this;
@@ -104,6 +118,7 @@ public class AssignmentDto {
             assignmentDto.setId(this.id);
             assignmentDto.setStart(this.start);
             assignmentDto.setEnd(this.end);
+            assignmentDto.setUserId(this.userId);
             assignmentDto.setAssetId(this.assetId);
             assignmentDto.setAssetName(this.assetName);
             assignmentDto.setAssetSerialNumber(this.assetSerialNumber);
