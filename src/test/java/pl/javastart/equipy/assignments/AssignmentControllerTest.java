@@ -1,6 +1,7 @@
 package pl.javastart.equipy.assignments;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -177,7 +178,7 @@ class AssignmentControllerTest{
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {3L, 1L})
+    @ValueSource(longs = {3L, 1L, 8L})
     void getAssignmentsForUserId__should_return_list_of_assignments__if_user_id_is_given(Long userId) throws Exception {
         List<AssignmentDto> assignmentDtos = new ArrayList<>();
         assignmentDtos = assignmentsDtoData
@@ -186,6 +187,7 @@ class AssignmentControllerTest{
                 .filter( assignmentDto -> assignmentDto.getUserId().equals(userId))
                 .collect(Collectors.toList());
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         String jsonAssignmentsData = objectMapper.writeValueAsString(assignmentDtos);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController( assignmentService) ).build();
