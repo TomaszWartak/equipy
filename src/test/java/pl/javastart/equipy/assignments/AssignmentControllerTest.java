@@ -197,4 +197,18 @@ class AssignmentControllerTest{
                 .andExpect(content().json(jsonAssignmentsData))
                 .andReturn();
     }
+
+
+    @ParameterizedTest
+    @ValueSource(longs = {8L, 1000L})
+    void getAssignmentsForUserId__should_return_404__if_user_id_not_exists_in_db(Long userId) throws Exception {
+        String jsonAssignmentsData = "[]";
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController( assignmentService) ).build();
+
+        MvcResult result = mockMvc
+                .perform(get("/api/users/"+userId+"/assignments"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().json(jsonAssignmentsData))
+                .andReturn();
+    }
 }
