@@ -21,12 +21,12 @@ VALUES
     ('Apple iPhone X', 'Telefon z zestawem słuchawkowym lightning i ładowarką', 'APLX17287GHX21', 3),
     ('Apple iPhone 8', 'Telefon z zestawem słuchawkowym lightning i ładowarką', 'APL8185652HGT7', 3);
 INSERT INTO
-    assignment( start, end, user_id, asset_id, asset_name, asset_serial_number )
+    assignment( start, end, user_id, asset_id )
 VALUES
-    ('2023-10-18 15:00:00', '2023-10-29 16:00:00', 3, 1, 'Asus MateBook D', 'ASMBD198723'),
-    ('2023-10-18 15:00:00', null, 3, 3, 'Audi A4 Avant', 'VINDI3576XO526716'),
-    ('2023-10-30 7:00:00', null, 3, 2, 'Apple MacBook Pro 2015', 'MBP15X0925336'),
-    ('2023-10-18 15:00:00', null, 3, 4, 'Apple iPhone X', 'APLX17287GHX21'),
-    ('2023-10-01 7:00:00', '2023-10-29 16:00:00', 1, 2, 'Apple MacBook Pro 2015', 'MBP15X0925336'),
-    ('2023-10-30 15:00:00', null, 1, 1, 'Asus MateBook D', 'ASMBD198723'),
-    ('2023-10-01 15:00:00', null, 1, 5, 'Apple iPhone 8', 'APL8185652HGT7');
+    ('2023-10-18 15:00:00', '2023-10-29 16:00:00', 3, 1),
+    ('2023-10-18 15:00:00', null, 3, 3),
+    ('2023-10-30 7:00:00', null, 3, 2),
+    ('2023-10-18 15:00:00', null, 3, 4),
+    ('2023-10-01 7:00:00', '2023-10-29 16:00:00', 1, 2),
+    ('2023-10-30 15:00:00', null, 1, 1),
+    ('2023-10-01 15:00:00', null, 1, 5);

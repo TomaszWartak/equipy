@@ -1,8 +1,11 @@
 package pl.javastart.equipy.assets;
 
 import jakarta.persistence.*;
+import pl.javastart.equipy.assignments.Assignment;
 import pl.javastart.equipy.categories.Category;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,7 +21,8 @@ public class Asset {
     @ManyToOne
     /* todo @JoinColumn(name = "category_id")*/
     private Category category;
-
+    @OneToMany(mappedBy = "asset")
+    private List<Assignment> assignments = new ArrayList<>();
     public Long getId() {
         return id;
     }
@@ -57,6 +61,14 @@ public class Asset {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     @Override

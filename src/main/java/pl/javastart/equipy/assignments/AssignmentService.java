@@ -19,10 +19,4 @@ public class AssignmentService {
         this.assignmentRepository = assignmentRepository;
     }
 
-    public ArrayList<Assignment> getAssignmentsForUserId(Long userId ) {
-        userRepository
-                .findById( userId )
-                .orElseThrow( UserNotFoundException::new );
-        return (ArrayList<Assignment>) assignmentRepository.findByUserId( userId );
-    }
 }

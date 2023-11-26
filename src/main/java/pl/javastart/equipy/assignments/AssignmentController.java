@@ -17,8 +17,5 @@ public class AssignmentController {
         this.assignmentService = assignmentService;
     }
 
-    @GetMapping("/api/users/{userId}/assignments")
-    public ArrayList<Assignment> getAssignmentsForUserId(@PathVariable Long userId) {
-        return assignmentService.getAssignmentsForUserId( userId );
-    }
+
 }

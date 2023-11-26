@@ -1,6 +1,9 @@
 package pl.javastart.equipy.users;
 
 import org.springframework.stereotype.Service;
+import pl.javastart.equipy.assignments.Assignment;
+import pl.javastart.equipy.assignments.AssignmentDto;
+import pl.javastart.equipy.assignments.AssignmentMapper;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -52,5 +55,15 @@ public class UserService {
         });
         User updatedUser = userRepository.save(UserMapper.toUser(userDtoToUpdate));
         return UserMapper.toUserDto(updatedUser);
+    }
+
+    public ArrayList<AssignmentDto> getAssignmentsForUserId( Long userId ) {
+        Optional<User> userFoundWrapped = userRepository.findById( userId );
+        return (ArrayList<AssignmentDto>) userFoundWrapped
+                .map( User::getAssignments )
+                .orElseThrow( UserNotFoundException::new )
+                .stream()
+                .map( AssignmentMapper::toAssignmentDto)
+                .collect(Collectors.toList());
     }
 }

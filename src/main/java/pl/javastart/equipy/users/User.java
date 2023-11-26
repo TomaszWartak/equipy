@@ -1,7 +1,10 @@
 package pl.javastart.equipy.users;
 
 import jakarta.persistence.*;
+import pl.javastart.equipy.assignments.Assignment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,6 +16,8 @@ public class User {
     private String lastName;
     @Column(unique = true)
     private String pesel;
+    @OneToMany(mappedBy = "user")
+    private List<Assignment> assignments = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -44,6 +49,14 @@ public class User {
 
     public void setPesel(String pesel) {
         this.pesel = pesel;
+    }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
     }
 
     @Override

@@ -5,8 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.javastart.equipy.assignments.Assignment;
+import pl.javastart.equipy.assignments.AssignmentDto;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -64,5 +67,8 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(userDto));
     }
 
-
+    @GetMapping("/api/users/{userId}/assignments")
+    public ArrayList<AssignmentDto> getAssignmentsForUserId(@PathVariable Long userId) {
+        return userService.getAssignmentsForUserId( userId );
+    }
 }

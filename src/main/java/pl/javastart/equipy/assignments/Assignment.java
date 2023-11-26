@@ -1,10 +1,8 @@
 package pl.javastart.equipy.assignments;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import pl.javastart.equipy.assets.Asset;
+import pl.javastart.equipy.users.User;
 
 import java.time.LocalDateTime;
 import java.time.LocalDateTime;
@@ -18,10 +16,16 @@ public class Assignment {
     private Long id;
     private LocalDateTime start;
     private LocalDateTime end; 
-    private Long userId; // todo dodaj get set i map
-    private Long assetId;
-    private String assetName;
-    private String assetSerialNumber;
+    /*  todo  private Long userId;
+    private Long assetId;*/
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne
+    @JoinColumn(name = "asset_id")
+    private Asset asset;
+    // todo private String assetName;
+    // todo private String assetSerialNumber;
 
     public Long getId() {
         return id;
@@ -48,35 +52,35 @@ public class Assignment {
     }
 
     public Long getUserId() {
-        return userId;
+        return this.user.getId();
     }
 
     public void setUserId(Long userId) {
-        this.userId = userId;
+        this.user.setId(userId);
     }
 
     public Long getAssetId() {
-        return assetId;
+        return this.asset.getId();
     }
 
     public void setAssetId(Long assetId) {
-        this.assetId = assetId;
+        this.asset.setId(assetId);
     }
 
     public String getAssetName() {
-        return assetName;
+        return this.asset.getName();
     }
 
     public void setAssetName(String assetName) {
-        this.assetName = assetName;
+        this.asset.setName( assetName );
     }
 
     public String getAssetSerialNumber() {
-        return assetSerialNumber;
+        return asset.getSerialNumber();
     }
 
     public void setAssetSerialNumber(String assetSerialNumber) {
-        this.assetSerialNumber = assetSerialNumber;
+        asset.setSerialNumber( assetSerialNumber );
     }
 
     @Override
@@ -84,12 +88,16 @@ public class Assignment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Assignment that = (Assignment) o;
-        return Objects.equals(id, that.id) && Objects.equals(start, that.start) && Objects.equals(end, that.end) && Objects.equals(assetId, that.assetId) && Objects.equals(assetName, that.assetName) && Objects.equals(assetSerialNumber, that.assetSerialNumber);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(start, that.start) &&
+                Objects.equals(end, that.end) &&
+                Objects.equals(getAssetId(), that.getAssetId()) &&
+                Objects.equals(getUserId(), that.getUserId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, start, end, assetId, assetName, assetSerialNumber);
+        return Objects.hash(id, start, end, getAssetId(), getUserId() );
     }
 
     public static class AssignmentBuilder {
