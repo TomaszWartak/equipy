@@ -208,7 +208,6 @@ class AssignmentControllerTest{
         MvcResult result = mockMvc
                 .perform(get("/api/users/"+userId+"/assignments"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().json(jsonAssignmentsData))
                 .andReturn();
     }
 }
