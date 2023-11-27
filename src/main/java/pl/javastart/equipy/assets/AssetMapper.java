@@ -12,7 +12,7 @@ public class AssetMapper {
         this.categoryRepository = categoryRepository;
     }
 
-    static AssetDto toAssetDto(Asset asset) {
+    public static AssetDto toAssetDto(Asset asset) {
         return AssetDto.builder()
                 .id(asset.getId())
                 .name( asset.getName() )
@@ -21,7 +21,7 @@ public class AssetMapper {
                 .categoryName( asset.getCategory()!=null ?asset.getCategory().getName() :null)
                 .build();
     }
-    static Asset toAsset(AssetDto assetDto) {
+    public static Asset toAsset(AssetDto assetDto) {
         Asset asset = Asset.builder()
                 .id( assetDto.getId() )
                 .name( assetDto.getName() )

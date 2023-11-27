@@ -1,11 +1,13 @@
 package pl.javastart.equipy.users;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pl.javastart.equipy.assignments.Assignment;
 import pl.javastart.equipy.assignments.AssignmentDto;
 import pl.javastart.equipy.assignments.AssignmentMapper;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,9 +59,10 @@ public class UserService {
         return UserMapper.toUserDto(updatedUser);
     }
 
-    public ArrayList<AssignmentDto> getAssignmentsForUserId( Long userId ) {
+    @Transactional
+    public List<AssignmentDto> getAssignmentsForUserId(Long userId ) {
         Optional<User> userFoundWrapped = userRepository.findById( userId );
-        return (ArrayList<AssignmentDto>) userFoundWrapped
+        return /*(ArrayList<AssignmentDto>)*/ userFoundWrapped
                 .map( User::getAssignments )
                 .orElseThrow( UserNotFoundException::new )
                 .stream()

@@ -2,6 +2,7 @@ package pl.javastart.equipy.assignments;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pl.javastart.equipy.TestHelperData;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -37,7 +39,13 @@ class AssignmentControllerTest{
     private MockMvc mockMvc;
     @Autowired
     private AssignmentService assignmentService;
-    private HashMap<Long,AssignmentDto> assignmentsDtoData;
+    // todo private HashMap<Long,AssignmentDto> assignmentsDtoData;
+    private TestHelperData testHelperData;
+
+    @BeforeAll
+    void prepareTestHelperData() {
+        testHelperData = TestHelperData.getInstance();
+    }
 
     @BeforeEach
     void prepareExpectedData(){
@@ -45,6 +53,8 @@ class AssignmentControllerTest{
     }
 
     private void prepareAssignmentsDtoData() {
+        testHelperData.prepareAssignmentsDtoData();
+/* todo
         assignmentsDtoData = new HashMap<>();
         assignmentsDtoData.put(
             1L,
@@ -166,6 +176,7 @@ class AssignmentControllerTest{
                         .build()
             )
         );
+*/
     }
 
     @Test
@@ -181,7 +192,7 @@ class AssignmentControllerTest{
     @ValueSource(longs = {3L, 1L, 8L})
     void getAssignmentsForUserId__should_return_list_of_assignments__if_user_id_is_given(Long userId) throws Exception {
         List<AssignmentDto> assignmentDtos = new ArrayList<>();
-        assignmentDtos = assignmentsDtoData
+        assignmentDtos = testHelperData.getAssignmentsDtoData()
                 .values()
                 .stream()
                 .filter( assignmentDto -> assignmentDto.getUserId().equals(userId))

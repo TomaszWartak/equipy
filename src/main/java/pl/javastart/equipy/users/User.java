@@ -74,4 +74,46 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, firstName, lastName, pesel);
     }
+
+    public static class UserBuilder {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String pesel;
+
+        public UserBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public UserBuilder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public UserBuilder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+
+        public UserBuilder pesel(String pesel) {
+            this.pesel = pesel;
+            return this;
+        }
+
+        public User build() {
+            User user = new User();
+            user.id = this.id;
+            user.firstName = this.firstName;
+            user.lastName = this.lastName;
+            user.pesel = this.pesel;
+            return user;
+        }
+    }
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
 }

@@ -1,6 +1,7 @@
 package pl.javastart.equipy.assets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,10 +16,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pl.javastart.equipy.categories.Category;
+import pl.javastart.equipy.TestHelperData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,23 +31,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class AssetControllerTest {
-    private static final Long NOTEBOOKS_ID = 1L;
+/*  todo   private static final Long NOTEBOOKS_ID = 1L;
     private static final Long VEHICLES_ID = 2L;
-    private static final Long PHONES_ID = 3L;
+    private static final Long PHONES_ID = 3L;*/
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private AssetService assetService;
-    private ArrayList<AssetDto> assetsDtoData;
-    private HashMap<String,Category> categoriesData;
+/*  todo  private ArrayList<AssetDto> assetsDtoData;
+    private HashMap<String,Category> categoriesData;*/
+    private static TestHelperData testHelperData;
+
+    @BeforeAll
+    static void prepareTestHelperData() {
+        testHelperData = TestHelperData.getInstance();
+    }
 
     @BeforeEach
     void prepareExpectedData(){
-        prepareCategoriesData();
-        prepareAssetsDtoData();
+        testHelperData.prepareCategoriesData();
+        testHelperData.prepareAssetsDtoData();
     }
 
+/* todo
     private void prepareCategoriesData() {
         categoriesData = new HashMap<>();
         categoriesData.put(
@@ -131,6 +140,7 @@ class AssetControllerTest {
             )
         );
     }
+*/
 
     @Test
     void getAssets__should_return_200() throws Exception {
@@ -143,8 +153,12 @@ class AssetControllerTest {
 
     @Test
     void getAssets__should_return_all_assets_data__if_data_are_in_db() throws Exception {
+        List<AssetDto> allAssetDtos = testHelperData.getAssetDtosData()
+                .values()
+                .stream()
+                .collect(Collectors.toList());
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonAssetsData = objectMapper.writeValueAsString(assetsDtoData);
+        String jsonAssetsData = objectMapper.writeValueAsString(allAssetDtos);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new AssetController(assetService) ).build();
         MvcResult result = mockMvc
@@ -158,9 +172,9 @@ class AssetControllerTest {
     @ValueSource( strings = {"App", "app"})
     void getAssets__should_return_three_json_data__when_request_is_filtered_phrase_ignore_case( String textToSearch ) throws Exception {
         ArrayList<AssetDto> filteredAssets = new ArrayList<>();
-        filteredAssets.add(assetsDtoData.get(1));
-        filteredAssets.add(assetsDtoData.get(3));
-        filteredAssets.add(assetsDtoData.get(4));
+        filteredAssets.add(testHelperData.getAssetDtosData().get(2L));
+        filteredAssets.add(testHelperData.getAssetDtosData().get(4L));
+        filteredAssets.add(testHelperData.getAssetDtosData().get(5L));
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonAssetsData = objectMapper.writeValueAsString(filteredAssets);
 
@@ -237,7 +251,7 @@ class AssetControllerTest {
 
     @Test
     void getAsset__should_return_200_and_Json_asset_data__if_given_id_exists_in_db() throws Exception{
-        AssetDto assetDto = assetsDtoData.get(0);
+        AssetDto assetDto = testHelperData.getAssetDtosData().get(1L);
         ObjectMapper objectMapper = new ObjectMapper();
         String getResultAssetJsonData = objectMapper.writeValueAsString( assetDto );
         MvcResult result = mockMvc
@@ -257,7 +271,7 @@ class AssetControllerTest {
 
     @Test
     void updateAsset__should_return_200_and_Json_asset_data__when_data_saving_was_successful() throws Exception{
-        AssetDto assetDto = assetsDtoData.get(2);
+        AssetDto assetDto = testHelperData.getAssetDtosData().get(3L);
         assetDto.setName( assetDto.getName()+" 4x4");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonRequest = objectMapper.writeValueAsString(assetDto);
@@ -273,9 +287,10 @@ class AssetControllerTest {
                 .andReturn();
     }
 
+
     @Test
     void updateAsset__should_return_400__if_asset_id_is_different_from_id_given_in_url() throws Exception{
-        String jsonRequest = new ObjectMapper().writeValueAsString(assetsDtoData.get(0));
+        String jsonRequest = new ObjectMapper().writeValueAsString(testHelperData.getAssetDtosData().get(1L));
 
         MvcResult result = mockMvc
                 .perform( put("/api/assets/3" )
@@ -288,7 +303,7 @@ class AssetControllerTest {
 
     @Test
     void updateAsset__should_return_400__if_asset_id_is_null() throws Exception{
-        AssetDto assetDtoToSave = assetsDtoData.get(0);
+        AssetDto assetDtoToSave = testHelperData.getAssetDtosData().get(1L);
         assetDtoToSave.setId(null);
         String jsonRequest = new ObjectMapper().writeValueAsString(assetDtoToSave);
 
@@ -300,11 +315,10 @@ class AssetControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
-
     @ParameterizedTest
     @ValueSource( longs = {0L, -1L, -1000L})
     void updateAsset__should_return_400__if_asset_id_is_less_then_1( Long assetId ) throws Exception{
-        AssetDto assetDtoToSave = assetsDtoData.get(0);
+        AssetDto assetDtoToSave = testHelperData.getAssetDtosData().get(1L);
         assetDtoToSave.setId(assetId);
         String jsonRequest = new ObjectMapper().writeValueAsString(assetDtoToSave);
 
@@ -319,8 +333,8 @@ class AssetControllerTest {
 
     @Test
     void updateAsset__should_return_409__if_asset_serial_number_exists_in_other_asset_in_db( ) throws Exception{
-        AssetDto assetDtoToSave = assetsDtoData.get(0);
-        AssetDto otherAsset = assetsDtoData.get(1);
+        AssetDto assetDtoToSave = testHelperData.getAssetDtosData().get(1L);
+        AssetDto otherAsset = testHelperData.getAssetDtosData().get(2L);
         assetDtoToSave.setSerialNumber( otherAsset.getSerialNumber() );
         String jsonRequest = new ObjectMapper().writeValueAsString(assetDtoToSave);
 
@@ -333,4 +347,17 @@ class AssetControllerTest {
                 .andReturn();
     }
 
+/*  todo   @ParameterizedTest
+    @ValueSource( longs = {1L, 3L})
+    void getAssignmentsForAssets__should_return_all_asset_assignments_data__if_data_are_in_db( Long assetId ) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        // todo String jsonAssetsData = objectMapper.writeValueAsString(assetsDtoData);
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssetController(assetService) ).build();
+        MvcResult result = mockMvc
+                .perform(get("/api/assets/"+assetId+"/assignments"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonAssetsData))
+                .andReturn();
+    }*/
 }

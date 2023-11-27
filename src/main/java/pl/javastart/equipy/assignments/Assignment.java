@@ -51,6 +51,23 @@ public class Assignment {
         this.end = end;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Asset getAsset() {
+        return asset;
+    }
+
+    public void setAsset(Asset asset) {
+        this.asset = asset;
+    }
+/* todo
+
     public Long getUserId() {
         return this.user.getId();
     }
@@ -82,22 +99,23 @@ public class Assignment {
     public void setAssetSerialNumber(String assetSerialNumber) {
         asset.setSerialNumber( assetSerialNumber );
     }
+*/
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Assignment that = (Assignment) o;
-        return Objects.equals(id, that.id) &&
+        return Objects.equals(id, that.id)/* todo &&
                 Objects.equals(start, that.start) &&
                 Objects.equals(end, that.end) &&
                 Objects.equals(getAssetId(), that.getAssetId()) &&
-                Objects.equals(getUserId(), that.getUserId());
+                Objects.equals(getUserId(), that.getUserId())*/;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, start, end, getAssetId(), getUserId() );
+        return Objects.hash(id, start, end/* todo, getAssetId(), getUserId()*/ );
     }
 
     public static class AssignmentBuilder {
@@ -105,10 +123,12 @@ public class Assignment {
         private Long id;
         private LocalDateTime start;
         private LocalDateTime end;
-        private Long userId;
+        private User user;
+        private Asset asset;
+/* todo        private Long userId;
         private Long assetId;
         private String assetName;
-        private String assetSerialNumber;
+        private String assetSerialNumber;*/
 
         public AssignmentBuilder id(Long id) {
             this.id = id;
@@ -125,6 +145,17 @@ public class Assignment {
             return this;
         }
 
+        public AssignmentBuilder user(User user) {
+            this.user = user;
+            return this;
+        }
+        public AssignmentBuilder asset(Asset asset) {
+            this.asset = asset;
+            return this;
+        }
+
+
+/* todo
         public AssignmentBuilder userId(Long userId) {
             this.userId = userId;
             return this;
@@ -142,17 +173,19 @@ public class Assignment {
         public AssignmentBuilder assetSerialNumber(String assetSerialNumber) {
             this.assetSerialNumber = assetSerialNumber;
             return this;
-        }
+        }*/
 
         public Assignment build() {
             Assignment assignment = new Assignment();
             assignment.setId(this.id);
             assignment.setStart(this.start);
             assignment.setEnd(this.end);
-            assignment.setUserId(this.userId);
+            assignment.setUser( this.user );
+            assignment.setAsset( this.asset );
+            /* todo assignment.setUserId(this.userId);
             assignment.setAssetId(this.assetId);
             assignment.setAssetName(this.assetName);
-            assignment.setAssetSerialNumber(this.assetSerialNumber);
+            assignment.setAssetSerialNumber(this.assetSerialNumber);*/
             return assignment;
         }
     }

@@ -1,10 +1,13 @@
 package pl.javastart.equipy.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +17,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pl.javastart.equipy.TestHelperData;
 import pl.javastart.equipy.assets.AssetRepository;
-import pl.javastart.equipy.assignments.AssignmentRepository;
+import pl.javastart.equipy.assignments.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -36,9 +44,10 @@ class UserControllerTest {
     private AssignmentRepository assignmentRepository;
     @Autowired
     private AssetRepository assetRepository;
-
+    private static TestHelperData testHelperData;
     private String jsonResponseEmpty ="[]";
 
+    /* todo
     private String jsonResponseAllUsersData ="[\n" +
             "    {\n" +
             "        \"id\": 1,\n" +
@@ -71,6 +80,8 @@ class UserControllerTest {
             "        \"pesel\": \"4567890123\"\n" +
             "    }\n" +
             "]";
+*/
+    // todo zamień w metopodach na dane z TestHelper i usuń
     String jsonResponseForSkiPhrase ="[\n" +
             "    {\n" +
             "        \"id\": 1,\n" +
@@ -86,6 +97,7 @@ class UserControllerTest {
             "    }\n" +
             "]";
 
+    // todo zamień w metopodach na dane z TestHelper i usuń
     String jsonResponseForId1 =
 /*            "[" +
                 "{" +
@@ -113,6 +125,19 @@ class UserControllerTest {
             "]";
 
 
+/*    todo private HashMap<Long, AssignmentDto> assignmentsDtoData;*/
+
+    @BeforeAll
+    static void prepareTestHelperData() {
+        testHelperData = TestHelperData.getInstance();
+    }
+    @BeforeEach
+    void prepareExpectedData(){
+        testHelperData.prepareUsersDtoData();
+        testHelperData.prepareAssetsDtoData();
+        testHelperData.prepareAssignmentsDtoData();
+    }
+
     @Test
     void getUsers__should_return_200() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
@@ -135,6 +160,12 @@ class UserControllerTest {
     @Test
     void getUsers__should_return_five_json_data__when_all_users_data_are_in_db() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
+        List<UserDto> AllUserDtos = testHelperData.getUserDtosData()
+                    .values()
+                    .stream()
+                    .collect(Collectors.toList());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponseAllUsersData = objectMapper.writeValueAsString( AllUserDtos );
         mockMvc
                 .perform(get("/api/users"))
                 .andExpect(content().json(jsonResponseAllUsersData));
@@ -150,6 +181,13 @@ class UserControllerTest {
 
     @Test
     void getUsers__should_return_all_json_data__when_request_is_filtered_empty_phrase() throws Exception {
+        List<UserDto> allUserDtos = testHelperData.getUserDtosData()
+                .values()
+                .stream()
+                .collect(Collectors.toList());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponseAllUsersData = objectMapper.writeValueAsString(allUserDtos);
+
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
         mockMvc
                 .perform( get("/api/users?lastName=") )
@@ -305,4 +343,45 @@ class UserControllerTest {
                 .andReturn();
     }
 
+    @Test
+    void getAssignmentsForUserId__should_return_200( ) throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup( new UserController( userService) ).build();
+        MvcResult result = mockMvc
+                .perform(get("/api/users/1/assignments"))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {3L, 1L})
+    void getAssignmentsForUserId__should_return_list_of_assignments__if_user_id_exists_in_db (Long userId) throws Exception {
+        List<AssignmentDto> assignmentDtos = testHelperData.getAssignmentsDtoData()
+                .values()
+                .stream()
+                .filter( assignmentDto -> assignmentDto.getUserId().equals(userId) )
+                .collect(Collectors.toList());
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        String jsonAssignmentsData = objectMapper.writeValueAsString(assignmentDtos);
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new UserController( userService) ).build();
+        MvcResult result = mockMvc
+                .perform(get("/api/users/"+userId+"/assignments"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonAssignmentsData))
+                .andReturn();
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(longs = {8L, 1000L})
+    void getAssignmentsForUserId__should_return_404__if_user_id_not_exists_in_db(Long userId) throws Exception {
+        String jsonAssignmentsData = "[]";
+        mockMvc = MockMvcBuilders.standaloneSetup( new UserController( userService) ).build();
+
+        MvcResult result = mockMvc
+                .perform(get("/api/users/"+userId+"/assignments"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
 }
