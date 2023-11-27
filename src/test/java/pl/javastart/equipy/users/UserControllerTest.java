@@ -14,6 +14,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pl.javastart.equipy.assets.AssetRepository;
+import pl.javastart.equipy.assignments.AssignmentRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -26,12 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+    @Autowired
+    private AssetRepository assetRepository;
 
     private String jsonResponseEmpty ="[]";
 
@@ -120,6 +124,8 @@ class UserControllerTest {
     @Test
     void getUsers__should_return_empty_json_data__when_no_users_data_are_in_db() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
+        assignmentRepository.deleteAll();
+        assetRepository.deleteAll();
         userRepository.deleteAll();
         mockMvc
                 .perform(get("/api/users"))
