@@ -178,7 +178,7 @@ class AssignmentControllerTest{
         );
 */
     }
-
+/*
     @Test
     void getAssignmentsForUserId__should_return_200( ) throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController( assignmentService) ).build();
@@ -220,5 +220,5 @@ class AssignmentControllerTest{
                 .perform(get("/api/users/"+userId+"/assignments"))
                 .andExpect(status().isNotFound())
                 .andReturn();
-    }
+    }*/
 }

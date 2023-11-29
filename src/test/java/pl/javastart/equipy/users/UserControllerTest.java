@@ -81,7 +81,7 @@ class UserControllerTest {
             "    }\n" +
             "]";
 */
-    // todo zamień w metopodach na dane z TestHelper i usuń
+    /* todo zamień w metopodach na dane z TestHelper i usuń
     String jsonResponseForSkiPhrase ="[\n" +
             "    {\n" +
             "        \"id\": 1,\n" +
@@ -95,7 +95,7 @@ class UserControllerTest {
             "        \"lastName\": \"Pawelski\",\n" +
             "        \"pesel\": \"4567890123\"\n" +
             "    }\n" +
-            "]";
+            "]"; /*
 
     // todo zamień w metopodach na dane z TestHelper i usuń
     String jsonResponseForId1 =
@@ -108,12 +108,14 @@ class UserControllerTest {
                 "}"+
             "]";*/
 
+/* todo
             "{\n" +
             "    \"id\": 1,\n" +
             "    \"firstName\": \"Jan\",\n" +
             "    \"lastName\": \"Kowalski\",\n" +
             "    \"pesel\": \"0123456789\"\n" +
             "}";
+
 
     String jsonRequestForNewUserProperData = "[\n" +
             "    {\n" +
@@ -123,7 +125,7 @@ class UserControllerTest {
             "        \"pesel\": \"0012345678\"\n" +
             "    }\n" +
             "]";
-
+*/
 
 /*    todo private HashMap<Long, AssignmentDto> assignmentsDtoData;*/
 
@@ -154,7 +156,7 @@ class UserControllerTest {
         userRepository.deleteAll();
         mockMvc
                 .perform(get("/api/users"))
-                .andExpect(content().json(jsonResponseEmpty ));
+                .andExpect(content().json(jsonResponseEmpty));
     }
 
     @Test
@@ -171,11 +173,20 @@ class UserControllerTest {
                 .andExpect(content().json(jsonResponseAllUsersData));
     }
 
-    @Test
-    void getUsers__should_return_two_json_data__when_request_is_filtered_ski_phrase() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"Ski", "ski"})
+    void getUsers__should_return_two_json_data__when_request_is_filtered_ski_phrase( String phrase) throws Exception {
+        List<UserDto> lastNameContainsSkiPhraseUserDtos = testHelperData.getUserDtosData()
+                .values()
+                .stream()
+                .filter( userDto -> userDto.getLastName().toUpperCase().contains(phrase.toUpperCase()) )
+                .collect(Collectors.toList());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponseForSkiPhrase = objectMapper.writeValueAsString(lastNameContainsSkiPhraseUserDtos);
+        
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
         mockMvc
-                .perform(get("/api/users?lastName=Ski"))
+                .perform(get("/api/users?lastName="+phrase))
                 .andExpect(content().json(jsonResponseForSkiPhrase));
     }
 
@@ -197,10 +208,17 @@ class UserControllerTest {
     @Test
     void addUser__should_return_201_and_user_json_data__after_data_are_saved() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
+/* todo
         UserDto userDto = new UserDto();
         userDto.setFirstName("John");
         userDto.setLastName("Rambo");
         userDto.setPesel("0012345678");
+*/
+        UserDto userDto = UserDto.builder()
+                .firstName("John")
+                .lastName("Rambo")
+                .pesel("0012345678")
+                .build();
         String jsonRequest = objectMapper.writeValueAsString(userDto);
         userDto.setId(6L);
         String jsonResponse = objectMapper.writeValueAsString(userDto);
@@ -233,14 +251,23 @@ class UserControllerTest {
                 .andExpect(status().is(409));
     }
     @Test
-    void addUser__should_return_400__if_id_is_given_in_user_data() throws Exception{
+    void addUser__should_return_400__if_id_is_given_in_new_user_data() throws Exception{
+        UserDto userDto = UserDto.builder()
+                .id(7L)
+                .firstName("John")
+                .lastName("Rambo")
+                .pesel("0123456789")
+                .build();
         ObjectMapper objectMapper = new ObjectMapper();
+/* todo
         UserDto userDto = new UserDto();
         userDto.setId(7L);
         userDto.setFirstName("John");
         userDto.setLastName("Rambo");
         userDto.setPesel("0123456789");
+*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
+
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
         mockMvc
                 .perform(
@@ -252,6 +279,10 @@ class UserControllerTest {
 
     @Test
     void getUser__should_return_200_and_Json_user_data__if_given_id_1_exists_in_db() throws Exception{
+        UserDto userDto = testHelperData.getUserDtosData().get( 1L );
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponseForId1 = objectMapper.writeValueAsString(userDto);
+
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
         MvcResult result = mockMvc
                 .perform(get("/api/users/1"))
@@ -271,14 +302,22 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUser__should_return_200_and_Json_user_data__when_data_saving_was_successful() throws Exception{
+    void updateUser__should_return_200_and_Json_user_data__when_data_updating_was_successful() throws Exception{
+        UserDto userDto = UserDto.builder()
+                .id(5L)
+                .firstName("John")
+                .lastName("Rambo")
+                .pesel("00000000000")
+                .build();
         ObjectMapper objectMapper = new ObjectMapper();
+/*  todo      ObjectMapper objectMapper = new ObjectMapper();
         UserDto userDto = new UserDto();
         userDto.setId(5L);
         userDto.setFirstName("John");
         userDto.setLastName("Rambo");
-        userDto.setPesel("00000000000");
+        userDto.setPesel("00000000000");*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
+
         MvcResult result = mockMvc
                 .perform( put("/api/users/5" )
                     .contentType(MediaType.APPLICATION_JSON)
@@ -290,13 +329,20 @@ class UserControllerTest {
 
     @Test
     void updateUser__should_return_409__if_user_pesel_exists_in_db() throws Exception{
+        UserDto userDto = UserDto.builder()
+                .id(5L)
+                .firstName("John")
+                .lastName("Rambo")
+                .pesel("1234567890")
+                .build();// ten pesel nalezy do użytkownika o id 2
         ObjectMapper objectMapper = new ObjectMapper();
-        UserDto userDto = new UserDto();
+/* todo       UserDto userDto = new UserDto();
         userDto.setId(5L);
         userDto.setFirstName("John");
         userDto.setLastName("Rambo");
-        userDto.setPesel("1234567890"); // ten pesel nalezy do użytkownika o id 2
+        userDto.setPesel("1234567890"); // ten pesel nalezy do użytkownika o id 2*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
+
         MvcResult result = mockMvc
                 .perform(
                         put("/api/users/5" )
@@ -309,13 +355,20 @@ class UserControllerTest {
 
     @Test
     void updateUser__should_return_400__if_user_id_is_different_from_id_given_in_url() throws Exception{
+        UserDto userDto = UserDto.builder()
+                .id(4L)
+                .firstName("John")
+                .lastName("Rambo")
+                .pesel("4567890123")
+                .build();
         ObjectMapper objectMapper = new ObjectMapper();
-        UserDto userDto = new UserDto();
+/* todo       UserDto userDto = new UserDto();
         userDto.setId(4L);
         userDto.setFirstName("John");
         userDto.setLastName("Rambo");
-        userDto.setPesel("4567890123");
+        userDto.setPesel("4567890123");*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
+
         MvcResult result = mockMvc
                 .perform(
                         put("/api/users/5" )
@@ -327,11 +380,18 @@ class UserControllerTest {
     }
     @Test
     void updateUser__should_return_400__if_user_id_is_not_given() throws Exception{
+        UserDto userDto = UserDto.builder()
+                .firstName("John")
+                .lastName("Rambo")
+                .pesel("121212121212")
+                .build();
         ObjectMapper objectMapper = new ObjectMapper();
+/* todo
         UserDto userDto = new UserDto();
         userDto.setFirstName("John");
         userDto.setLastName("Rambo");
         userDto.setPesel("121212121212");
+*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
         MvcResult result = mockMvc
                 .perform(
@@ -376,7 +436,6 @@ class UserControllerTest {
     @ParameterizedTest
     @ValueSource(longs = {8L, 1000L})
     void getAssignmentsForUserId__should_return_404__if_user_id_not_exists_in_db(Long userId) throws Exception {
-        String jsonAssignmentsData = "[]";
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController( userService) ).build();
 
         MvcResult result = mockMvc

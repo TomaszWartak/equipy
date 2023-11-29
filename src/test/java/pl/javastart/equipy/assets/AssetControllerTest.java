@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.javastart.equipy.TestHelperData;
+import pl.javastart.equipy.assignments.AssignmentDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,9 @@ class AssetControllerTest {
 
     @BeforeEach
     void prepareExpectedData(){
-        testHelperData.prepareCategoriesData();
+        testHelperData.prepareUsersDtoData();
         testHelperData.prepareAssetsDtoData();
+        testHelperData.prepareAssignmentsDtoData();
     }
 
 /* todo
@@ -347,11 +349,16 @@ class AssetControllerTest {
                 .andReturn();
     }
 
-/*  todo   @ParameterizedTest
+/*    @ParameterizedTest
     @ValueSource( longs = {1L, 3L})
     void getAssignmentsForAssets__should_return_all_asset_assignments_data__if_data_are_in_db( Long assetId ) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        // todo String jsonAssetsData = objectMapper.writeValueAsString(assetsDtoData);
+        List<AssignmentDto> assignmentDtos = testHelperData.getAssignmentsDtoData()
+                .values()
+                .stream()
+                .filter( assignmentDto -> assignmentDto.getAssetId()==assetId )
+                .collect(Collectors.toList());
+        String jsonAssetsData = objectMapper.writeValueAsString(assignmentDtos);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new AssetController(assetService) ).build();
         MvcResult result = mockMvc
