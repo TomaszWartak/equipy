@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.javastart.equipy.assignments.AssignmentDto;
 
 import java.net.URI;
 import java.util.List;
@@ -64,4 +65,8 @@ public class AssetController {
     }
 
 
+    @GetMapping("/api/assets/{assetId}/assignments")
+    public List<AssignmentDto> getAssignmentsForAsset( @PathVariable Long assetId ) {
+        return assetService.getAssignmentsForAssetId( assetId );
+    }
 }

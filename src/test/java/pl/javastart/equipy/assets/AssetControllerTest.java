@@ -1,6 +1,7 @@
 package pl.javastart.equipy.assets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -349,14 +350,15 @@ class AssetControllerTest {
                 .andReturn();
     }
 
-/*    @ParameterizedTest
+    @ParameterizedTest
     @ValueSource( longs = {1L, 3L})
-    void getAssignmentsForAssets__should_return_all_asset_assignments_data__if_data_are_in_db( Long assetId ) throws Exception {
+    void getAssignmentsForAsset__should_return_all_asset_assignments_data__if_data_are_in_db( Long assetId ) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         List<AssignmentDto> assignmentDtos = testHelperData.getAssignmentsDtoData()
                 .values()
                 .stream()
-                .filter( assignmentDto -> assignmentDto.getAssetId()==assetId )
+                .filter( assignmentDto -> assignmentDto.getAssetId().equals(assetId) )
                 .collect(Collectors.toList());
         String jsonAssetsData = objectMapper.writeValueAsString(assignmentDtos);
 
@@ -366,5 +368,5 @@ class AssetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonAssetsData))
                 .andReturn();
-    }*/
+    }
 }
