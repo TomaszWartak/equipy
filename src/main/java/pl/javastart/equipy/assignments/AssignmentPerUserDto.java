@@ -1,8 +1,10 @@
 package pl.javastart.equipy.assignments;
 
+import pl.javastart.equipy.users.User;
+
 import java.time.LocalDateTime;
 
-public class AssignmentDto {
+public class AssignmentPerUserDto {
     private Long id;
     private LocalDateTime start;
     private LocalDateTime end;
@@ -69,7 +71,7 @@ public class AssignmentDto {
         this.assetSerialNumber = assetSerialNumber;
     }
 
-    public class AssignmentDtoBuilder {
+    public static class AssignmentPerUserDtoBuilder {
 
         private Long id;
         private LocalDateTime start;
@@ -79,50 +81,54 @@ public class AssignmentDto {
         private String assetName;
         private String assetSerialNumber;
 
-        public AssignmentDtoBuilder id(Long id) {
+        public AssignmentPerUserDtoBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public AssignmentDtoBuilder start(LocalDateTime start) {
+        public AssignmentPerUserDtoBuilder start(LocalDateTime start) {
             this.start = start;
             return this;
         }
 
-        public AssignmentDtoBuilder end(LocalDateTime end) {
+        public AssignmentPerUserDtoBuilder end(LocalDateTime end) {
             this.end = end;
             return this;
         }
 
-        public AssignmentDtoBuilder userId(Long userId) {
-            this.assetId = userId;
+        public AssignmentPerUserDtoBuilder userId(Long userId) {
+            this.userId = userId;
             return this;
         }
-        public AssignmentDtoBuilder assetId(Long assetId) {
+        public AssignmentPerUserDtoBuilder assetId(Long assetId) {
             this.assetId = assetId;
             return this;
         }
 
-        public AssignmentDtoBuilder assetName(String assetName) {
+        public AssignmentPerUserDtoBuilder assetName(String assetName) {
             this.assetName = assetName;
             return this;
         }
 
-        public AssignmentDtoBuilder assetSerialNumber(String assetSerialNumber) {
+        public AssignmentPerUserDtoBuilder assetSerialNumber(String assetSerialNumber) {
             this.assetSerialNumber = assetSerialNumber;
             return this;
         }
 
-        public AssignmentDto build() {
-            AssignmentDto assignmentDto = new AssignmentDto();
-            assignmentDto.setId(this.id);
-            assignmentDto.setStart(this.start);
-            assignmentDto.setEnd(this.end);
-            assignmentDto.setUserId(this.userId);
-            assignmentDto.setAssetId(this.assetId);
-            assignmentDto.setAssetName(this.assetName);
-            assignmentDto.setAssetSerialNumber(this.assetSerialNumber);
-            return assignmentDto;
+        public AssignmentPerUserDto build() {
+            AssignmentPerUserDto assignmentPerUserDto = new AssignmentPerUserDto();
+            assignmentPerUserDto.setId(this.id);
+            assignmentPerUserDto.setStart(this.start);
+            assignmentPerUserDto.setEnd(this.end);
+            assignmentPerUserDto.setUserId(this.userId);
+            assignmentPerUserDto.setAssetId(this.assetId);
+            assignmentPerUserDto.setAssetName(this.assetName);
+            assignmentPerUserDto.setAssetSerialNumber(this.assetSerialNumber);
+            return assignmentPerUserDto;
         }
+    }
+
+    public static AssignmentPerUserDtoBuilder builder() {
+        return new AssignmentPerUserDtoBuilder();
     }
 }

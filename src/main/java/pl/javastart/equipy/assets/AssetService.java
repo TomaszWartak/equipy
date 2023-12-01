@@ -2,10 +2,8 @@ package pl.javastart.equipy.assets;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import pl.javastart.equipy.assignments.AssignmentDto;
+import pl.javastart.equipy.assignments.AssignmentPerAssetDto;
 import pl.javastart.equipy.assignments.AssignmentMapper;
-import pl.javastart.equipy.users.User;
-import pl.javastart.equipy.users.UserNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,13 +61,13 @@ public class AssetService {
 
 
     @Transactional
-    public List<AssignmentDto> getAssignmentsForAssetId(Long assetId) {
+    public List<AssignmentPerAssetDto> getAssignmentsForAssetId(Long assetId) {
         Optional<Asset> assetFoundWrapped = assetRepository.findById( assetId );
         return /*(ArrayList<AssignmentDto>)*/ assetFoundWrapped
                 .map( Asset::getAssignments )
                 .orElseThrow( AssetNotFoundException::new )
                 .stream()
-                .map( AssignmentMapper::toAssignmentDto)
-                .collect(Collectors.toList());
+                .map( AssignmentMapper::toAssignmentPerAssetDto )
+                .collect( Collectors.toList() );
     }
 }

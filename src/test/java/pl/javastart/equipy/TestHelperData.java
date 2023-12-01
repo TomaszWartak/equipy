@@ -4,7 +4,8 @@ import pl.javastart.equipy.assets.Asset;
 import pl.javastart.equipy.assets.AssetDto;
 import pl.javastart.equipy.assets.AssetMapper;
 import pl.javastart.equipy.assignments.Assignment;
-import pl.javastart.equipy.assignments.AssignmentDto;
+import pl.javastart.equipy.assignments.AssignmentPerAssetDto;
+import pl.javastart.equipy.assignments.AssignmentPerUserDto;
 import pl.javastart.equipy.assignments.AssignmentMapper;
 import pl.javastart.equipy.categories.Category;
 import pl.javastart.equipy.users.UserDto;
@@ -22,7 +23,9 @@ public class TestHelperData {
     private HashMap<Long, UserDto> usersDtoData;
     private HashMap<Long, AssetDto> assetsDtoData;
     private HashMap<String, Category> categoriesData;
-    private HashMap<Long, AssignmentDto> assignmentsDtoData;
+    private HashMap<Long, AssignmentPerUserDto> assignmentsPerUserDtoData;
+
+    private HashMap<Long, AssignmentPerAssetDto> assignmentsPerAssetDtoData;
 
     private TestHelperData() {
 
@@ -176,10 +179,15 @@ public class TestHelperData {
     }
 
     public void prepareAssignmentsDtoData() {
-        assignmentsDtoData = new HashMap<>();
-        assignmentsDtoData.put(
+        prepareAssignmentsForUserDtoData();
+        prepareAssignmentsForAssetDtoData();
+    }
+
+    private void prepareAssignmentsForUserDtoData() {
+        assignmentsPerUserDtoData = new HashMap<>();
+        assignmentsPerUserDtoData.put(
                 1L,
-                AssignmentMapper.toAssignmentDto(
+                AssignmentMapper.toAssignmentPerUserDto(
                         Assignment.builder()
                                 .id(1L)
                                 .start( LocalDateTime.of(
@@ -195,9 +203,9 @@ public class TestHelperData {
                                 .build()
                 )
         );
-        assignmentsDtoData.put(
+        assignmentsPerUserDtoData.put(
                 2L,
-                AssignmentMapper.toAssignmentDto(
+                AssignmentMapper.toAssignmentPerUserDto(
                         Assignment.builder()
                                 .id(2L)
                                 .start( LocalDateTime.of(
@@ -209,9 +217,9 @@ public class TestHelperData {
                                 .build()
                 )
         );
-        assignmentsDtoData.put(
+        assignmentsPerUserDtoData.put(
                 3L,
-                AssignmentMapper.toAssignmentDto(
+                AssignmentMapper.toAssignmentPerUserDto(
                         Assignment.builder()
                                 .id(3L)
                                 .start( LocalDateTime.of(
@@ -223,9 +231,9 @@ public class TestHelperData {
                                 .build()
                 )
         );
-        assignmentsDtoData.put(
+        assignmentsPerUserDtoData.put(
                 4L,
-                AssignmentMapper.toAssignmentDto(
+                AssignmentMapper.toAssignmentPerUserDto(
                         Assignment.builder()
                                 .id(4L)
                                 .start( LocalDateTime.of(
@@ -237,9 +245,9 @@ public class TestHelperData {
                                 .build()
                 )
         );
-        assignmentsDtoData.put(
+        assignmentsPerUserDtoData.put(
                 5L,
-                AssignmentMapper.toAssignmentDto(
+                AssignmentMapper.toAssignmentPerUserDto(
                         Assignment.builder()
                                 .id(5L)
                                 .start( LocalDateTime.of(
@@ -255,9 +263,9 @@ public class TestHelperData {
                                 .build()
                 )
         );
-        assignmentsDtoData.put(
+        assignmentsPerUserDtoData.put(
                 6L,
-                AssignmentMapper.toAssignmentDto(
+                AssignmentMapper.toAssignmentPerUserDto(
                         Assignment.builder()
                                 .id(6L)
                                 .start( LocalDateTime.of(
@@ -269,9 +277,120 @@ public class TestHelperData {
                                 .build()
                 )
         );
-        assignmentsDtoData.put(
+        assignmentsPerUserDtoData.put(
                 7L,
-                AssignmentMapper.toAssignmentDto(
+                AssignmentMapper.toAssignmentPerUserDto(
+                        Assignment.builder()
+                                .id(7L)
+                                .start( LocalDateTime.of(
+                                        2023, 10, 1,
+                                        15, 0, 0, 0)
+                                )
+                                .user( UserMapper.toUser( usersDtoData.get(1L) ) )
+                                .asset( AssetMapper.toAsset(assetsDtoData.get(5L) ) )
+                                .build()
+                )
+        );
+    }
+
+    private void prepareAssignmentsForAssetDtoData() {
+        // TODO to jakaś zamotka jest...
+        assignmentsPerAssetDtoData = new HashMap<>();
+        assignmentsPerAssetDtoData.put(
+                1L,
+                AssignmentMapper.toAssignmentPerAssetDto(
+                        Assignment.builder()
+                                .id(1L)
+                                .start( LocalDateTime.of(
+                                        2023, 10, 18,
+                                        15, 0, 0, 0 )
+                                )
+                                .end( LocalDateTime.of(
+                                        2023, 10, 29,
+                                        16, 0, 0, 0)
+                                )
+                                .user( UserMapper.toUser( usersDtoData.get(3L) ) )
+                                .asset( AssetMapper.toAsset(assetsDtoData.get(1L) ) )
+                                .build()
+                )
+        );
+        assignmentsPerAssetDtoData.put(
+                2L,
+                AssignmentMapper.toAssignmentPerAssetDto(
+                        Assignment.builder()
+                                .id(2L)
+                                .start( LocalDateTime.of(
+                                        2023, 10, 18,
+                                        15, 0, 0, 0)
+                                )
+                                .user( UserMapper.toUser( usersDtoData.get(3L) ) )
+                                .asset( AssetMapper.toAsset(assetsDtoData.get(3L) ) )
+                                .build()
+                )
+        );
+        assignmentsPerAssetDtoData.put(
+                3L,
+                AssignmentMapper.toAssignmentPerAssetDto(
+                        Assignment.builder()
+                                .id(3L)
+                                .start( LocalDateTime.of(
+                                        2023, 10, 30,
+                                        7, 0, 0, 0)
+                                )
+                                .user( UserMapper.toUser( usersDtoData.get(3L) ) )
+                                .asset( AssetMapper.toAsset(assetsDtoData.get(2L) ) )
+                                .build()
+                )
+        );
+        assignmentsPerAssetDtoData.put(
+                4L,
+                AssignmentMapper.toAssignmentPerAssetDto(
+                        Assignment.builder()
+                                .id(4L)
+                                .start( LocalDateTime.of(
+                                        2023, 10, 18,
+                                        15, 0, 0, 0)
+                                )
+                                .user( UserMapper.toUser( usersDtoData.get(3L) ) )
+                                .asset( AssetMapper.toAsset(assetsDtoData.get(4L) ) )
+                                .build()
+                )
+        );
+        assignmentsPerAssetDtoData.put(
+                5L,
+                AssignmentMapper.toAssignmentPerAssetDto(
+                        Assignment.builder()
+                                .id(5L)
+                                .start( LocalDateTime.of(
+                                        2023, 10, 1,
+                                        7, 0, 0, 0)
+                                )
+                                .end( LocalDateTime.of(
+                                        2023, 10, 29,
+                                        16, 0, 0, 0)
+                                )
+                                .user( UserMapper.toUser( usersDtoData.get(1L) ) )
+                                .asset( AssetMapper.toAsset(assetsDtoData.get(2L) ) )
+                                .build()
+                )
+        );
+        assignmentsPerAssetDtoData.put(
+                6L,
+                AssignmentMapper.toAssignmentPerAssetDto(
+                        Assignment.builder()
+                                .id(6L)
+                                .start( LocalDateTime.of(
+                                        2023, 10, 30,
+                                        15, 0, 0, 0)
+                                )
+                                .user( UserMapper.toUser( usersDtoData.get(1L) ) )
+                                .asset( AssetMapper.toAsset(assetsDtoData.get(1L) ) )
+                                .build()
+                )
+        );
+        assignmentsPerAssetDtoData.put(
+                7L,
+                AssignmentMapper.toAssignmentPerAssetDto(
                         Assignment.builder()
                                 .id(7L)
                                 .start( LocalDateTime.of(
@@ -294,7 +413,11 @@ public class TestHelperData {
     public HashMap<Long, AssetDto> getAssetDtosData() {
         return assetsDtoData;
     }
-    public HashMap<Long, AssignmentDto> getAssignmentsDtoData() {
-        return assignmentsDtoData;
+    public HashMap<Long, AssignmentPerUserDto> getAssignmentsPerUserDtoData() {
+        return assignmentsPerUserDtoData;
+    }
+
+    public HashMap<Long, AssignmentPerAssetDto> getAssignmentsPerAssetDtoData() {
+        return assignmentsPerAssetDtoData;
     }
 }

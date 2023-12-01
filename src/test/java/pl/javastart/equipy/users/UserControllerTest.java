@@ -21,7 +21,6 @@ import pl.javastart.equipy.TestHelperData;
 import pl.javastart.equipy.assets.AssetRepository;
 import pl.javastart.equipy.assignments.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -415,14 +414,14 @@ class UserControllerTest {
     @ParameterizedTest
     @ValueSource(longs = {3L, 1L})
     void getAssignmentsForUserId__should_return_list_of_assignments__if_user_id_exists_in_db (Long userId) throws Exception {
-        List<AssignmentDto> assignmentDtos = testHelperData.getAssignmentsDtoData()
+        List<AssignmentPerUserDto> assignmentPerUserDtos = testHelperData.getAssignmentsPerUserDtoData()
                 .values()
                 .stream()
                 .filter( assignmentDto -> assignmentDto.getUserId().equals(userId) )
                 .collect(Collectors.toList());
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String jsonAssignmentsData = objectMapper.writeValueAsString(assignmentDtos);
+        String jsonAssignmentsData = objectMapper.writeValueAsString(assignmentPerUserDtos);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController( userService) ).build();
         MvcResult result = mockMvc
