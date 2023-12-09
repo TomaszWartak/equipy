@@ -2,7 +2,7 @@ package pl.javastart.equipy.assignments;
 
 import java.time.LocalDateTime;
 
-public class AssignmentPerAssetDto {
+public class AssignmentForAssetDto {
     private Long id;
     private LocalDateTime start;
     private LocalDateTime end;
@@ -130,8 +130,8 @@ public class AssignmentPerAssetDto {
             return this;
         }
 
-        public AssignmentPerAssetDto build() {
-            AssignmentPerAssetDto assignmentPerUserDto = new AssignmentPerAssetDto();
+        public AssignmentForAssetDto build() {
+            AssignmentForAssetDto assignmentPerUserDto = new AssignmentForAssetDto();
             assignmentPerUserDto.setId(this.id);
             assignmentPerUserDto.setStart(this.start);
             assignmentPerUserDto.setEnd(this.end);

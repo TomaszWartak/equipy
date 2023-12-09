@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.javastart.equipy.TestHelperData;
-import pl.javastart.equipy.assignments.AssignmentPerAssetDto;
+import pl.javastart.equipy.assignments.AssignmentForAssetDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -355,18 +355,27 @@ class AssetControllerTest {
     void getAssignmentsForAsset__should_return_all_asset_assignments_data__if_data_are_in_db( Long assetId ) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        List<AssignmentPerAssetDto> assignmentPerAssetDtos = testHelperData.getAssignmentsPerAssetDtoData()
+        List<AssignmentForAssetDto> assignmentForAssetDtos = testHelperData.getAssignmentsPerAssetDtoData()
                 .values()
                 .stream()
                 .filter( assignmentDto -> assignmentDto.getAssetId().equals(assetId) )
                 .collect(Collectors.toList());
-        String jsonAssetsData = objectMapper.writeValueAsString(assignmentPerAssetDtos);
+        String jsonAssetsData = objectMapper.writeValueAsString(assignmentForAssetDtos);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new AssetController(assetService) ).build();
         MvcResult result = mockMvc
                 .perform(get("/api/assets/"+assetId+"/assignments"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonAssetsData))
+                .andReturn();
+    }
+
+    @ParameterizedTest
+    @ValueSource( longs = {0L, 6L})
+    void getAssignmentsForAsset__should_return_404__if_given_asset_id_doesnt_exist_in_db( Long assetId ) throws Exception{
+        MvcResult result = mockMvc
+                .perform( get("/api/assets/"+assetId+"/assignments"))
+                .andExpect( status().isNotFound() )
                 .andReturn();
     }
 }

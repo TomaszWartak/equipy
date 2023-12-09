@@ -1,5 +1,6 @@
 package pl.javastart.equipy.assignments;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import pl.javastart.equipy.assets.Asset;
 import pl.javastart.equipy.users.User;
@@ -14,7 +15,9 @@ public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    // todo @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime start;
+    // todo @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime end; 
     /*  todo  private Long userId;
     private Long assetId;*/

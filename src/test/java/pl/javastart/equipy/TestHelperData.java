@@ -4,8 +4,8 @@ import pl.javastart.equipy.assets.Asset;
 import pl.javastart.equipy.assets.AssetDto;
 import pl.javastart.equipy.assets.AssetMapper;
 import pl.javastart.equipy.assignments.Assignment;
-import pl.javastart.equipy.assignments.AssignmentPerAssetDto;
-import pl.javastart.equipy.assignments.AssignmentPerUserDto;
+import pl.javastart.equipy.assignments.AssignmentForAssetDto;
+import pl.javastart.equipy.assignments.AssignmentForUserDto;
 import pl.javastart.equipy.assignments.AssignmentMapper;
 import pl.javastart.equipy.categories.Category;
 import pl.javastart.equipy.users.UserDto;
@@ -23,9 +23,9 @@ public class TestHelperData {
     private HashMap<Long, UserDto> usersDtoData;
     private HashMap<Long, AssetDto> assetsDtoData;
     private HashMap<String, Category> categoriesData;
-    private HashMap<Long, AssignmentPerUserDto> assignmentsPerUserDtoData;
+    private HashMap<Long, AssignmentForUserDto> assignmentsPerUserDtoData;
 
-    private HashMap<Long, AssignmentPerAssetDto> assignmentsPerAssetDtoData;
+    private HashMap<Long, AssignmentForAssetDto> assignmentsPerAssetDtoData;
 
     private TestHelperData() {
 
@@ -36,6 +36,12 @@ public class TestHelperData {
             instance = new TestHelperData();
         }
         return instance;
+    }
+
+    public void prepareAllData() {
+        prepareUsersDtoData();
+        prepareAssetsDtoData();
+        prepareAssignmentsDtoData();
     }
 
     public void prepareUsersDtoData() {
@@ -86,32 +92,6 @@ public class TestHelperData {
                         .build()
         );
     }
-    public void prepareCategoriesData() {
-        categoriesData = new HashMap<>();
-        categoriesData.put(
-                "Laptopy",
-                Category.builder()
-                        .id(NOTEBOOKS_CATEGORY_ID)
-                        .name("Laptopy")
-                        .description("Laptopy, notebooki itd")
-                        .build()
-        );
-        categoriesData.put(
-                "Pojazdy",
-                Category.builder()
-                        .id(VEHICLES_CATEGORY_ID)
-                        .name("Pojazdy")
-                        .description("Samochody, samoloty, pociągi")
-                        .build()
-        );
-        categoriesData.put(
-                "Telefony",
-                Category.builder()
-                        .id(PHONES_CATEGORY_ID)
-                        .name("Telefony")
-                        .description("Telefony komórkowe")
-                        .build()
-        );}
 
     public void prepareAssetsDtoData() {
         prepareCategoriesData();
@@ -177,6 +157,33 @@ public class TestHelperData {
                 )
         );
     }
+
+    public void prepareCategoriesData() {
+        categoriesData = new HashMap<>();
+        categoriesData.put(
+                "Laptopy",
+                Category.builder()
+                        .id(NOTEBOOKS_CATEGORY_ID)
+                        .name("Laptopy")
+                        .description("Laptopy, notebooki itd")
+                        .build()
+        );
+        categoriesData.put(
+                "Pojazdy",
+                Category.builder()
+                        .id(VEHICLES_CATEGORY_ID)
+                        .name("Pojazdy")
+                        .description("Samochody, samoloty, pociągi")
+                        .build()
+        );
+        categoriesData.put(
+                "Telefony",
+                Category.builder()
+                        .id(PHONES_CATEGORY_ID)
+                        .name("Telefony")
+                        .description("Telefony komórkowe")
+                        .build()
+        );}
 
     public void prepareAssignmentsDtoData() {
         prepareAssignmentsForUserDtoData();
@@ -294,7 +301,6 @@ public class TestHelperData {
     }
 
     private void prepareAssignmentsForAssetDtoData() {
-        // TODO to jakaś zamotka jest...
         assignmentsPerAssetDtoData = new HashMap<>();
         assignmentsPerAssetDtoData.put(
                 1L,
@@ -413,11 +419,11 @@ public class TestHelperData {
     public HashMap<Long, AssetDto> getAssetDtosData() {
         return assetsDtoData;
     }
-    public HashMap<Long, AssignmentPerUserDto> getAssignmentsPerUserDtoData() {
+    public HashMap<Long, AssignmentForUserDto> getAssignmentsPerUserDtoData() {
         return assignmentsPerUserDtoData;
     }
 
-    public HashMap<Long, AssignmentPerAssetDto> getAssignmentsPerAssetDtoData() {
+    public HashMap<Long, AssignmentForAssetDto> getAssignmentsPerAssetDtoData() {
         return assignmentsPerAssetDtoData;
     }
 }

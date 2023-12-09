@@ -2,7 +2,7 @@ package pl.javastart.equipy.users;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import pl.javastart.equipy.assignments.AssignmentPerUserDto;
+import pl.javastart.equipy.assignments.AssignmentForUserDto;
 import pl.javastart.equipy.assignments.AssignmentMapper;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class UserService {
     }
 
     @Transactional
-    public List<AssignmentPerUserDto> getAssignmentsForUserId(Long userId ) {
+    public List<AssignmentForUserDto> getAssignmentsForUserId(Long userId ) {
         Optional<User> userFoundWrapped = userRepository.findById( userId );
         return /*(ArrayList<AssignmentDto>)*/ userFoundWrapped
                 .map( User::getAssignments )

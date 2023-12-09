@@ -2,7 +2,7 @@ package pl.javastart.equipy.assets;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import pl.javastart.equipy.assignments.AssignmentPerAssetDto;
+import pl.javastart.equipy.assignments.AssignmentForAssetDto;
 import pl.javastart.equipy.assignments.AssignmentMapper;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class AssetService {
 
 
     @Transactional
-    public List<AssignmentPerAssetDto> getAssignmentsForAssetId(Long assetId) {
+    public List<AssignmentForAssetDto> getAssignmentsForAssetId(Long assetId) {
         Optional<Asset> assetFoundWrapped = assetRepository.findById( assetId );
         return /*(ArrayList<AssignmentDto>)*/ assetFoundWrapped
                 .map( Asset::getAssignments )

@@ -414,14 +414,14 @@ class UserControllerTest {
     @ParameterizedTest
     @ValueSource(longs = {3L, 1L})
     void getAssignmentsForUserId__should_return_list_of_assignments__if_user_id_exists_in_db (Long userId) throws Exception {
-        List<AssignmentPerUserDto> assignmentPerUserDtos = testHelperData.getAssignmentsPerUserDtoData()
+        List<AssignmentForUserDto> assignmentForUserDtos = testHelperData.getAssignmentsPerUserDtoData()
                 .values()
                 .stream()
                 .filter( assignmentDto -> assignmentDto.getUserId().equals(userId) )
                 .collect(Collectors.toList());
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        String jsonAssignmentsData = objectMapper.writeValueAsString(assignmentPerUserDtos);
+        String jsonAssignmentsData = objectMapper.writeValueAsString(assignmentForUserDtos);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController( userService) ).build();
         MvcResult result = mockMvc

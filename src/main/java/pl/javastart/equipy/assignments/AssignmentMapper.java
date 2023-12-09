@@ -1,69 +1,63 @@
 package pl.javastart.equipy.assignments;
 
 import org.modelmapper.ModelMapper;
-import pl.javastart.equipy.assets.Asset;
 
 public class AssignmentMapper {
 
     private AssignmentMapper() {
         throw new IllegalStateException("Utility class");
     }
-    public static AssignmentPerUserDto toAssignmentPerUserDto(Assignment assignment) {
-        // todo return new ModelMapper().map(assignment, AssignmentDto.class );
-        AssignmentPerUserDto dto = AssignmentPerUserDto.builder()
+
+    public static AssignmentDto toAssignmentDto( Assignment assignment ) {
+        AssignmentDto dto = AssignmentDto.builder()
                 .id( assignment.getId() )
                 .start( assignment.getStart() )
-                .end( assignment.getStart())
+                .end( assignment.getEnd())
+                .userId( assignment.getUser().getId() )
+                .assetId( assignment.getAsset().getId() )
+                .build();
+        return dto;
+    }
+
+    public static AssignmentForUserDto toAssignmentPerUserDto(Assignment assignment) {
+        AssignmentForUserDto dto = AssignmentForUserDto.builder()
+                .id( assignment.getId() )
+                .start( assignment.getStart() )
+                .end( assignment.getEnd())
                 .userId( assignment.getUser().getId() )
                 .assetId( assignment.getAsset().getId() )
                 .assetName( assignment.getAsset().getName() )
                 .assetSerialNumber( assignment.getAsset().getSerialNumber() )
                 .build();
-/* todo
-        AssignmentPerUserDto dto = new AssignmentPerUserDto();
-        dto.setId( assignment.getId() );
-        dto.setStart( assignment.getStart() );
-        dto.setEnd( assignment.getEnd() );
-        dto.setUserId( assignment.getUser().getId() );
-        Asset asset = assignment.getAsset();
-        dto.setAssetId( asset.getId() );
-        dto.setAssetName( asset.getName() );
-        dto.setAssetSerialNumber( asset.getSerialNumber() );
-*/
         return dto;
     }
-    public static AssignmentPerAssetDto toAssignmentPerAssetDto(Assignment assignment) {
+    public static AssignmentForAssetDto toAssignmentPerAssetDto(Assignment assignment) {
         // todo return new ModelMapper().map(assignment, AssignmentDto.class );
-        AssignmentPerAssetDto dto = AssignmentPerAssetDto.builder()
+        AssignmentForAssetDto dto = AssignmentForAssetDto.builder()
                 .id( assignment.getId() )
                 .start( assignment.getStart() )
-                .end( assignment.getStart())
+                .end( assignment.getEnd())
                 .assetId( assignment.getAsset().getId() )
                 .userId( assignment.getUser().getId() )
                 .firstName( assignment.getUser().getFirstName() )
                 .lastName( assignment.getUser().getLastName() )
                 .pesel( assignment.getUser().getPesel() )
                 .build();
-/* todo         AssignmentPerAssetDto dto = new AssignmentPerAssetDto();
-        dto.setId( assignment.getId() );
-        dto.setStart( assignment.getStart() );
-        dto.setEnd( assignment.getEnd() );
-        dto.setUserId( assignment.getUser().getId() );
-        Asset asset = assignment.getAsset();
-        dto.setAssetId( asset.getId() );
-        dto.setAssetName( asset.getName() );
-        dto.setAssetSerialNumber( asset.getSerialNumber() );*/
         return dto;
     }
 
-    // todo to trzeba przetestować
-    public static Assignment toAssignment(AssignmentPerUserDto assignmentPerUserDto) {
-        return new ModelMapper().map(assignmentPerUserDto, Assignment.class );
+    public static Assignment toAssignment(AssignmentDto assignmentDto) {
+        return new ModelMapper().map(assignmentDto, Assignment.class );
     }
 
     // todo to trzeba przetestować
-    public static Assignment toAssignment(AssignmentPerAssetDto assignmentPerAssetDto) {
-        return new ModelMapper().map(assignmentPerAssetDto, Assignment.class );
+    public static Assignment toAssignment(AssignmentForUserDto assignmentForUserDto) {
+        return new ModelMapper().map(assignmentForUserDto, Assignment.class );
+    }
+
+    // todo to trzeba przetestować
+    public static Assignment toAssignment(AssignmentForAssetDto assignmentForAssetDto) {
+        return new ModelMapper().map(assignmentForAssetDto, Assignment.class );
     }
 
 

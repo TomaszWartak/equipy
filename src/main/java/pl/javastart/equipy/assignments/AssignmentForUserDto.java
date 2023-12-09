@@ -1,10 +1,8 @@
 package pl.javastart.equipy.assignments;
 
-import pl.javastart.equipy.users.User;
-
 import java.time.LocalDateTime;
 
-public class AssignmentPerUserDto {
+public class AssignmentForUserDto {
     private Long id;
     private LocalDateTime start;
     private LocalDateTime end;
@@ -115,16 +113,16 @@ public class AssignmentPerUserDto {
             return this;
         }
 
-        public AssignmentPerUserDto build() {
-            AssignmentPerUserDto assignmentPerUserDto = new AssignmentPerUserDto();
-            assignmentPerUserDto.setId(this.id);
-            assignmentPerUserDto.setStart(this.start);
-            assignmentPerUserDto.setEnd(this.end);
-            assignmentPerUserDto.setUserId(this.userId);
-            assignmentPerUserDto.setAssetId(this.assetId);
-            assignmentPerUserDto.setAssetName(this.assetName);
-            assignmentPerUserDto.setAssetSerialNumber(this.assetSerialNumber);
-            return assignmentPerUserDto;
+        public AssignmentForUserDto build() {
+            AssignmentForUserDto assignmentForUserDto = new AssignmentForUserDto();
+            assignmentForUserDto.setId(this.id);
+            assignmentForUserDto.setStart(this.start);
+            assignmentForUserDto.setEnd(this.end);
+            assignmentForUserDto.setUserId(this.userId);
+            assignmentForUserDto.setAssetId(this.assetId);
+            assignmentForUserDto.setAssetName(this.assetName);
+            assignmentForUserDto.setAssetSerialNumber(this.assetSerialNumber);
+            return assignmentForUserDto;
         }
     }
 
