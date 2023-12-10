@@ -1,8 +1,10 @@
 package pl.javastart.equipy.assignments;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.javastart.equipy.assets.AssetMapper;
 
@@ -21,7 +23,13 @@ public class AssignmentController {
 
     @PostMapping("/api/assignments")
     public ResponseEntity<AssignmentDto> addAssignment( @RequestBody AssignmentDto assignmentDtoToAdd ) {
-        AssignmentDto assignmentDtoAdded = assignmentService.addAssignment( assignmentDtoToAdd );
+        AssignmentDto assignmentDtoAdded = null;
+        try {
+             assignmentService.addAssignment( assignmentDtoToAdd );
+        }
+        catch (InvalidAssignmentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

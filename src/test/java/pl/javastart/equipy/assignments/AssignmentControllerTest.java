@@ -7,12 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -56,7 +54,7 @@ class AssignmentControllerTest{
     }
 
     @Test
-    void AddAssignment__should_return_201__if_assignment_was_added() throws Exception {
+    void addAssignment__should_return_201__if_assignment_was_added() throws Exception {
         // przygotowanie obiektu zapytania
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -80,7 +78,7 @@ class AssignmentControllerTest{
     }
 
     @Test
-    void AddAssignment__should_return_json_object__if_assignment_was_added() throws Exception {
+    void addAssignment__should_return_json_object__if_assignment_was_added() throws Exception {
         // przygotowanie obiektu zapytania
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -116,4 +114,56 @@ class AssignmentControllerTest{
                 .andExpect( content().json(jsonAssignmentsResponse) )
                 .andReturn();
     }
+
+    @Test
+    void addAssignment__should_return_BadRequest_status__if_userId_not_found() throws Exception{
+        // przygotowanie obiektu zapytania
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        AssignmentDto newAssignmentDto = AssignmentDto.builder()
+                .userId( 1000L )
+                .assetId( 2L )
+                .build();
+        String jsonNewAssignmentRequest = objectMapper.writeValueAsString( newAssignmentDto );
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments" )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( jsonNewAssignmentRequest )
+                )
+                .andExpect( status().isBadRequest() )
+                .andReturn();
+    }
+
+    @Test
+    void addAssignment__should_return_BadRequest_status__if_assetId_not_found() throws Exception{
+        // przygotowanie obiektu zapytania
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        AssignmentDto newAssignmentDto = AssignmentDto.builder()
+                .userId( 2L )
+                .assetId( 2000L )
+                .build();
+        String jsonNewAssignmentRequest = objectMapper.writeValueAsString( newAssignmentDto );
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments" )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( jsonNewAssignmentRequest )
+                )
+                .andExpect( status().isBadRequest() )
+                .andReturn();
+    }
+
+    /*
+    500 Bad Request -
+   + jeśli nie znaleziono użytkownika
+   + lub wyposażenia o wskazanych id,
+  -  którekolwiek id było ustawione na null
+  -  lub wyposażenie o wskazanym id jest już przypisane do jakiegokolwiek użytkownika.
+     */
 }
