@@ -34,15 +34,20 @@ public class AssignmentService {
     @Transactional
     public AssignmentDto addAssignment( AssignmentDto assignmentDtoToAdd ) {
         Long userId = assignmentDtoToAdd.getUserId();
+        if (userId==null) {
+            throw new InvalidAssignmentException("Nie podano id użytkownika");
+        }
         if (userNotFound( userId ) ) {
             throw new InvalidAssignmentException("Brak użytkownika z id: "+ userId);
         }
         Long assetId = assignmentDtoToAdd.getAssetId();
-        if( assetNotFound( assetId ) ) {
+        if (assetId==null) {
+            throw new InvalidAssignmentException("Nie podano id wyposażenia");
+        }if( assetNotFound( assetId ) ) {
             throw new InvalidAssignmentException("Brak wyposażenia z id: "+ userId);
         }
         Assignment assignmentToAdd = AssignmentMapper.toAssignment( assignmentDtoToAdd );
-        assignmentToAdd.setStart(dateTimeProvider.currentLocalDateTime() );
+        assignmentToAdd.setStart( dateTimeProvider.currentLocalDateTime() );
         return AssignmentMapper.toAssignmentDto( assignmentRepository.save( assignmentToAdd ));
     }
 

@@ -116,7 +116,7 @@ class AssignmentControllerTest{
     }
 
     @Test
-    void addAssignment__should_return_BadRequest_status__if_userId_not_found() throws Exception{
+    void addAssignment__should_return_BadRequest_status__if_given_userId_not_found() throws Exception{
         // przygotowanie obiektu zapytania
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -135,10 +135,11 @@ class AssignmentControllerTest{
                 )
                 .andExpect( status().isBadRequest() )
                 .andReturn();
+        // todo dodaj sprawdzenie komunikatu w badrequest, że user...
     }
 
     @Test
-    void addAssignment__should_return_BadRequest_status__if_assetId_not_found() throws Exception{
+    void addAssignment__should_return_BadRequest_status__if_given_assetId_not_found() throws Exception{
         // przygotowanie obiektu zapytania
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -157,13 +158,80 @@ class AssignmentControllerTest{
                 )
                 .andExpect( status().isBadRequest() )
                 .andReturn();
+        // todo dodaj sprawdzenie komunikatu w badrequest że asset...
     }
 
+    @Test
+    void addAssignment__should_return_BadRequest_status__if_given_userId_is_null() throws Exception{
+        // przygotowanie obiektu zapytania
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        AssignmentDto newAssignmentDto = AssignmentDto.builder()
+                .assetId( 2L )
+                .build();
+        String jsonNewAssignmentRequest = objectMapper.writeValueAsString( newAssignmentDto );
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments" )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( jsonNewAssignmentRequest )
+                )
+                .andExpect( status().isBadRequest() )
+                .andReturn();
+        // todo dodaj sprawdzenie komunikatu w badrequest, że userid null...
+    }
+
+    @Test
+    void addAssignment__should_return_BadRequest_status__if_given_assetId_is_null() throws Exception{
+        // przygotowanie obiektu zapytania
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        AssignmentDto newAssignmentDto = AssignmentDto.builder()
+                .userId( 2L )
+                .build();
+        String jsonNewAssignmentRequest = objectMapper.writeValueAsString( newAssignmentDto );
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments" )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( jsonNewAssignmentRequest )
+                )
+                .andExpect( status().isBadRequest() )
+                .andReturn();
+        // todo dodaj sprawdzenie komunikatu w badrequest, że assetid null...
+    }
+
+ /*  TODO @Test
+    void addAssignment__should_return_BadRequest_status__if_given_assetId_is_already_assigned() throws Exception{
+        // przygotowanie obiektu zapytania
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        AssignmentDto newAssignmentDto = AssignmentDto.builder()
+                .userId( 2L )
+                .build();
+        String jsonNewAssignmentRequest = objectMapper.writeValueAsString( newAssignmentDto );
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments" )
+                        .contentType( MediaType.APPLICATION_JSON )
+                        .content( jsonNewAssignmentRequest )
+                )
+                .andExpect( status().isBadRequest() )
+                .andReturn();
+        // todo dodaj sprawdzenie komunikatu w badrequest, że assetid null...
+    }
+*/
     /*
     500 Bad Request -
    + jeśli nie znaleziono użytkownika
    + lub wyposażenia o wskazanych id,
-  -  którekolwiek id było ustawione na null
+  +  którekolwiek id było ustawione na null
   -  lub wyposażenie o wskazanym id jest już przypisane do jakiegokolwiek użytkownika.
      */
 }
