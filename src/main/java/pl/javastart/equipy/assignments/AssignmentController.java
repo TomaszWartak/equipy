@@ -6,15 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.javastart.equipy.assets.AssetMapper;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 @RestController
 public class AssignmentController {
 
-    @Autowired
     private AssignmentService assignmentService;
 
     public AssignmentController(AssignmentService assignmentService) {
@@ -25,7 +22,7 @@ public class AssignmentController {
     public ResponseEntity<AssignmentDto> addAssignment( @RequestBody AssignmentDto assignmentDtoToAdd ) {
         AssignmentDto assignmentDtoAdded = null;
         try {
-             assignmentService.addAssignment( assignmentDtoToAdd );
+            assignmentDtoAdded = assignmentService.addAssignment( assignmentDtoToAdd );
         }
         catch (InvalidAssignmentException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());

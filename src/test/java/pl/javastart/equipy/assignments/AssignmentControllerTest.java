@@ -205,7 +205,7 @@ class AssignmentControllerTest{
         // todo dodaj sprawdzenie komunikatu w badrequest, że assetid null...
     }
 
- /*  TODO @Test
+@Test
     void addAssignment__should_return_BadRequest_status__if_given_assetId_is_already_assigned() throws Exception{
         // przygotowanie obiektu zapytania
         ObjectMapper objectMapper = new ObjectMapper();
@@ -213,6 +213,7 @@ class AssignmentControllerTest{
 
         AssignmentDto newAssignmentDto = AssignmentDto.builder()
                 .userId( 2L )
+                .assetId( 1L )
                 .build();
         String jsonNewAssignmentRequest = objectMapper.writeValueAsString( newAssignmentDto );
 
@@ -224,9 +225,9 @@ class AssignmentControllerTest{
                 )
                 .andExpect( status().isBadRequest() )
                 .andReturn();
-        // todo dodaj sprawdzenie komunikatu w badrequest, że assetid null...
+        // todo dodaj sprawdzenie komunikatu w badrequest, że wyposażenie jest już przyporządkowan...
     }
-*/
+
     /*
     500 Bad Request -
    + jeśli nie znaleziono użytkownika
