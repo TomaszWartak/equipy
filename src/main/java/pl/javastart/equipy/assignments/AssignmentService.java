@@ -69,4 +69,10 @@ public class AssignmentService {
         return assetWrapped.isEmpty();
     }
 
+    public AssignmentDto endOfAssignment( Long assignmentId ) {
+        Optional<Assignment> assignmentAssignedWrapped = assignmentRepository.findByIdAndEndNull( assignmentId );
+        Assignment assignmentEnded = assignmentAssignedWrapped.get();
+        assignmentEnded.setEnd( dateTimeProvider.currentLocalDateTime() );
+        return AssignmentMapper.toAssignmentDto( assignmentRepository.save( assignmentEnded ));
+    }
 }

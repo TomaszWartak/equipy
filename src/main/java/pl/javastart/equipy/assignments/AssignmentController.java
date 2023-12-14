@@ -1,6 +1,5 @@
 package pl.javastart.equipy.assignments;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,7 @@ public class AssignmentController {
 
     @PostMapping("/api/assignments")
     public ResponseEntity<AssignmentDto> addAssignment( @RequestBody AssignmentDto assignmentDtoToAdd ) {
-        AssignmentDto assignmentDtoAdded = null;
+        AssignmentDto assignmentDtoAdded;
         try {
             assignmentDtoAdded = assignmentService.addAssignment( assignmentDtoToAdd );
         }
@@ -33,5 +32,11 @@ public class AssignmentController {
                 .buildAndExpand(assignmentDtoAdded.getId())
                 .toUri();
         return ResponseEntity.created(location).body(assignmentDtoAdded);
+    }
+
+    @PostMapping("/api/assignments/{assignmentId}/end")
+    public ResponseEntity<?> finishAssignment( @PathVariable Long assignmentId) {
+        AssignmentDto assignmentDtoEnded = assignmentService.endOfAssignment( assignmentId );
+        return ResponseEntity.ok().body( assignmentDtoEnded.getEnd() );
     }
 }

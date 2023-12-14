@@ -205,7 +205,7 @@ class AssignmentControllerTest{
         // todo dodaj sprawdzenie komunikatu w badrequest, że assetid null...
     }
 
-@Test
+    @Test
     void addAssignment__should_return_BadRequest_status__if_given_assetId_is_already_assigned() throws Exception{
         // przygotowanie obiektu zapytania
         ObjectMapper objectMapper = new ObjectMapper();
@@ -228,11 +228,38 @@ class AssignmentControllerTest{
         // todo dodaj sprawdzenie komunikatu w badrequest, że wyposażenie jest już przyporządkowan...
     }
 
+    @Test
+    void finishAssignment__should_return_OK__if_assignment_finishing_was_successful() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+        Mockito.when( dateTimeProviderMock.currentLocalDateTime() ).thenReturn( now );
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments/4/end" ) )
+                .andExpect( status().isOk() )
+                .andReturn();
+    }
+
+    @Test
+    void finishAssignment__should_return_date_of_end__if_assignment_finishing_was_successful() throws Exception {
+
+        LocalDateTime now = LocalDateTime.now();
+        Mockito.when( dateTimeProviderMock.currentLocalDateTime() ).thenReturn( now );
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule( new JavaTimeModule() );
+        String jsonAssignmentsResponse = objectMapper.writeValueAsString( now );
+
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments/4/end" ) )
+                .andExpect( status().isOk() )
+                .andExpect( content().json(jsonAssignmentsResponse) )
+                .andReturn();
+    }
     /*
-    500 Bad Request -
-   + jeśli nie znaleziono użytkownika
-   + lub wyposażenia o wskazanych id,
-  +  którekolwiek id było ustawione na null
-  -  lub wyposażenie o wskazanym id jest już przypisane do jakiegokolwiek użytkownika.
+	• Kod odpowiedzi 200 Ok z przypisaną datą zakończenia wypożyczenia.
+	    Przykładowa odpowiedź: 200OK"2018-10-19T11:53:16.330314"
+	• Kod odpowiedzi 404 Not Found, jeśli podane assignmentId nie wskazuje na żadne wypożyczenie,
+Kod odpowiedzi 400 Bad Request jeśli wyposażenie ma już przypisaną datę zwrotu (zostało już zwrócone).
      */
 }
