@@ -15,20 +15,14 @@ public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    // todo @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime start;
-    // todo @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime end; 
-    /*  todo  private Long userId;
-    private Long assetId;*/
+    private LocalDateTime end;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
     @JoinColumn(name = "asset_id")
     private Asset asset;
-    // todo private String assetName;
-    // todo private String assetSerialNumber;
 
     public Long getId() {
         return id;
@@ -69,56 +63,18 @@ public class Assignment {
     public void setAsset(Asset asset) {
         this.asset = asset;
     }
-/* todo
-
-    public Long getUserId() {
-        return this.user.getId();
-    }
-
-    public void setUserId(Long userId) {
-        this.user.setId(userId);
-    }
-
-    public Long getAssetId() {
-        return this.asset.getId();
-    }
-
-    public void setAssetId(Long assetId) {
-        this.asset.setId(assetId);
-    }
-
-    public String getAssetName() {
-        return this.asset.getName();
-    }
-
-    public void setAssetName(String assetName) {
-        this.asset.setName( assetName );
-    }
-
-    public String getAssetSerialNumber() {
-        return asset.getSerialNumber();
-    }
-
-    public void setAssetSerialNumber(String assetSerialNumber) {
-        asset.setSerialNumber( assetSerialNumber );
-    }
-*/
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Assignment that = (Assignment) o;
-        return Objects.equals(id, that.id)/* todo &&
-                Objects.equals(start, that.start) &&
-                Objects.equals(end, that.end) &&
-                Objects.equals(getAssetId(), that.getAssetId()) &&
-                Objects.equals(getUserId(), that.getUserId())*/;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, start, end/* todo, getAssetId(), getUserId()*/ );
+        return Objects.hash(id, start, end );
     }
 
     public static class AssignmentBuilder {
@@ -128,10 +84,6 @@ public class Assignment {
         private LocalDateTime end;
         private User user;
         private Asset asset;
-/* todo        private Long userId;
-        private Long assetId;
-        private String assetName;
-        private String assetSerialNumber;*/
 
         public AssignmentBuilder id(Long id) {
             this.id = id;
@@ -157,27 +109,6 @@ public class Assignment {
             return this;
         }
 
-
-/* todo
-        public AssignmentBuilder userId(Long userId) {
-            this.userId = userId;
-            return this;
-        }
-        public AssignmentBuilder assetId(Long assetId) {
-            this.assetId = assetId;
-            return this;
-        }
-
-        public AssignmentBuilder assetName(String assetName) {
-            this.assetName = assetName;
-            return this;
-        }
-
-        public AssignmentBuilder assetSerialNumber(String assetSerialNumber) {
-            this.assetSerialNumber = assetSerialNumber;
-            return this;
-        }*/
-
         public Assignment build() {
             Assignment assignment = new Assignment();
             assignment.setId(this.id);
@@ -185,10 +116,6 @@ public class Assignment {
             assignment.setEnd(this.end);
             assignment.setUser( this.user );
             assignment.setAsset( this.asset );
-            /* todo assignment.setUserId(this.userId);
-            assignment.setAssetId(this.assetId);
-            assignment.setAssetName(this.assetName);
-            assignment.setAssetSerialNumber(this.assetSerialNumber);*/
             return assignment;
         }
     }

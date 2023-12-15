@@ -33,16 +33,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class AssetControllerTest {
-/*  todo   private static final Long NOTEBOOKS_ID = 1L;
-    private static final Long VEHICLES_ID = 2L;
-    private static final Long PHONES_ID = 3L;*/
-
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private AssetService assetService;
-/*  todo  private ArrayList<AssetDto> assetsDtoData;
-    private HashMap<String,Category> categoriesData;*/
     private static TestHelperData testHelperData;
 
     @BeforeAll
@@ -56,94 +50,6 @@ class AssetControllerTest {
         testHelperData.prepareAssetsDtoData();
         testHelperData.prepareAssignmentsDtoData();
     }
-
-/* todo
-    private void prepareCategoriesData() {
-        categoriesData = new HashMap<>();
-        categoriesData.put(
-            "Laptopy",
-             Category.builder()
-                  .id(NOTEBOOKS_ID)
-                  .name("Laptopy")
-                  .description("Laptopy, notebooki itd")
-                  .build()
-        );
-        categoriesData.put(
-            "Pojazdy",
-            Category.builder()
-                  .id(VEHICLES_ID)
-                  .name("Pojazdy")
-                  .description("Samochody, samoloty, pociągi")
-                  .build()
-        );
-        categoriesData.put(
-            "Telefony",
-            Category.builder()
-                    .id(PHONES_ID)
-                    .name("Telefony")
-                    .description("Telefony komórkowe")
-                    .build()
-        );}
-
-    private void prepareAssetsDtoData() {
-        assetsDtoData = new ArrayList<>();
-        assetsDtoData.add(
-            AssetMapper.toAssetDto(
-                Asset.builder()
-                    .id(1L)
-                    .name("Asus MateBook D")
-                    .description("15 calowy laptop, i5, 8GB DDR3, kolor czarny")
-                    .serialNumber("ASMBD198723")
-                    .category(categoriesData.get("Laptopy"))
-                    .build()
-            )
-        );
-        assetsDtoData.add(
-            AssetMapper.toAssetDto(
-                Asset.builder()
-                    .id(2L)
-                    .name("Apple MacBook Pro 2015")
-                    .description("13 calowy laptop, i5, 16GB DDR3, SSD256GB, kolor srebrny")
-                    .serialNumber("MBP15X0925336")
-                    .category(categoriesData.get("Laptopy"))
-                    .build()
-            )
-        );
-        assetsDtoData.add(
-            AssetMapper.toAssetDto(
-                Asset.builder()
-                    .id(3L)
-                    .name("Audi A4 Avant")
-                    .description("Audi Kombi, 1.9TDI, kolor szampan")
-                    .serialNumber("VINDI3576XO526716")
-                    .category(categoriesData.get("Pojazdy"))
-                    .build()
-            )
-        );
-        assetsDtoData.add(
-            AssetMapper.toAssetDto(
-                Asset.builder()
-                    .id(4L)
-                    .name("Apple iPhone X")
-                    .description("Telefon z zestawem słuchawkowym lightning i ładowarką")
-                    .serialNumber("APLX17287GHX21")
-                    .category(categoriesData.get("Telefony"))
-                    .build()
-            )
-        );
-        assetsDtoData.add(
-            AssetMapper.toAssetDto(
-                Asset.builder()
-                    .id(5L)
-                    .name("Apple iPhone 8")
-                    .description("Telefon z zestawem słuchawkowym lightning i ładowarką")
-                    .serialNumber("APL8185652HGT7")
-                    .category(categoriesData.get("Telefony"))
-                    .build()
-            )
-        );
-    }
-*/
 
     @Test
     void getAssets__should_return_200() throws Exception {

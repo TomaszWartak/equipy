@@ -36,7 +36,15 @@ public class AssignmentController {
 
     @PostMapping("/api/assignments/{assignmentId}/end")
     public ResponseEntity<?> finishAssignment( @PathVariable Long assignmentId) {
-        AssignmentDto assignmentDtoEnded = assignmentService.endOfAssignment( assignmentId );
+        AssignmentDto assignmentDtoEnded;
+        try {
+            assignmentDtoEnded = assignmentService.finishAssignment(assignmentId);
+        } catch (InvalidAssignmentException exception ) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    exception.getMessage()
+            );
+        }
         return ResponseEntity.ok().body( assignmentDtoEnded.getEnd() );
     }
 }

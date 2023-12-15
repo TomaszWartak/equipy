@@ -32,7 +32,6 @@ public class AssignmentMapper {
         return dto;
     }
     public static AssignmentForAssetDto toAssignmentPerAssetDto(Assignment assignment) {
-        // todo return new ModelMapper().map(assignment, AssignmentDto.class );
         AssignmentForAssetDto dto = AssignmentForAssetDto.builder()
                 .id( assignment.getId() )
                 .start( assignment.getStart() )

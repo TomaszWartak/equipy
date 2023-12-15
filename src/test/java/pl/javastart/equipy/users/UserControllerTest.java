@@ -46,88 +46,6 @@ class UserControllerTest {
     private static TestHelperData testHelperData;
     private String jsonResponseEmpty ="[]";
 
-    /* todo
-    private String jsonResponseAllUsersData ="[\n" +
-            "    {\n" +
-            "        \"id\": 1,\n" +
-            "        \"firstName\": \"Jan\",\n" +
-            "        \"lastName\": \"Kowalski\",\n" +
-            "        \"pesel\": \"0123456789\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\": 2,\n" +
-            "        \"firstName\": \"Paweł\",\n" +
-            "        \"lastName\": \"Zawiał\",\n" +
-            "        \"pesel\": \"1234567890\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\": 3,\n" +
-            "        \"firstName\": \"Marta\",\n" +
-            "        \"lastName\": \"Babiak\",\n" +
-            "        \"pesel\": \"2345678901\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\": 4,\n" +
-            "        \"firstName\": \"Karolina\",\n" +
-            "        \"lastName\": \"Modejska\",\n" +
-            "        \"pesel\": \"3456789012\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\": 5,\n" +
-            "        \"firstName\": \"Piotr\",\n" +
-            "        \"lastName\": \"Pawelski\",\n" +
-            "        \"pesel\": \"4567890123\"\n" +
-            "    }\n" +
-            "]";
-*/
-    /* todo zamień w metopodach na dane z TestHelper i usuń
-    String jsonResponseForSkiPhrase ="[\n" +
-            "    {\n" +
-            "        \"id\": 1,\n" +
-            "        \"firstName\": \"Jan\",\n" +
-            "        \"lastName\": \"Kowalski\",\n" +
-            "        \"pesel\": \"0123456789\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "        \"id\": 5,\n" +
-            "        \"firstName\": \"Piotr\",\n" +
-            "        \"lastName\": \"Pawelski\",\n" +
-            "        \"pesel\": \"4567890123\"\n" +
-            "    }\n" +
-            "]"; /*
-
-    // todo zamień w metopodach na dane z TestHelper i usuń
-    String jsonResponseForId1 =
-/*            "[" +
-                "{" +
-                    "id: 1," +
-                    "\"firstName\": \"Jan\"," +
-                    "\"lastName\": \"Kowalski\"," +
-                    "\"pesel\": \"0123456789\"" +
-                "}"+
-            "]";*/
-
-/* todo
-            "{\n" +
-            "    \"id\": 1,\n" +
-            "    \"firstName\": \"Jan\",\n" +
-            "    \"lastName\": \"Kowalski\",\n" +
-            "    \"pesel\": \"0123456789\"\n" +
-            "}";
-
-
-    String jsonRequestForNewUserProperData = "[\n" +
-            "    {\n" +
-            "        \"id\": 6,\n" +
-            "        \"firstName\": \"John\",\n" +
-            "        \"lastName\": \"Rambo\",\n" +
-            "        \"pesel\": \"0012345678\"\n" +
-            "    }\n" +
-            "]";
-*/
-
-/*    todo private HashMap<Long, AssignmentDto> assignmentsDtoData;*/
-
     @BeforeAll
     static void prepareTestHelperData() {
         testHelperData = TestHelperData.getInstance();
@@ -207,12 +125,7 @@ class UserControllerTest {
     @Test
     void addUser__should_return_201_and_user_json_data__after_data_are_saved() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-/* todo
-        UserDto userDto = new UserDto();
-        userDto.setFirstName("John");
-        userDto.setLastName("Rambo");
-        userDto.setPesel("0012345678");
-*/
+
         UserDto userDto = UserDto.builder()
                 .firstName("John")
                 .lastName("Rambo")
@@ -258,13 +171,6 @@ class UserControllerTest {
                 .pesel("0123456789")
                 .build();
         ObjectMapper objectMapper = new ObjectMapper();
-/* todo
-        UserDto userDto = new UserDto();
-        userDto.setId(7L);
-        userDto.setFirstName("John");
-        userDto.setLastName("Rambo");
-        userDto.setPesel("0123456789");
-*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
 
         mockMvc = MockMvcBuilders.standaloneSetup( new UserController(userService) ).build();
@@ -309,12 +215,6 @@ class UserControllerTest {
                 .pesel("00000000000")
                 .build();
         ObjectMapper objectMapper = new ObjectMapper();
-/*  todo      ObjectMapper objectMapper = new ObjectMapper();
-        UserDto userDto = new UserDto();
-        userDto.setId(5L);
-        userDto.setFirstName("John");
-        userDto.setLastName("Rambo");
-        userDto.setPesel("00000000000");*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
 
         MvcResult result = mockMvc
@@ -335,11 +235,6 @@ class UserControllerTest {
                 .pesel("1234567890")
                 .build();// ten pesel nalezy do użytkownika o id 2
         ObjectMapper objectMapper = new ObjectMapper();
-/* todo       UserDto userDto = new UserDto();
-        userDto.setId(5L);
-        userDto.setFirstName("John");
-        userDto.setLastName("Rambo");
-        userDto.setPesel("1234567890"); // ten pesel nalezy do użytkownika o id 2*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
 
         MvcResult result = mockMvc
@@ -361,11 +256,6 @@ class UserControllerTest {
                 .pesel("4567890123")
                 .build();
         ObjectMapper objectMapper = new ObjectMapper();
-/* todo       UserDto userDto = new UserDto();
-        userDto.setId(4L);
-        userDto.setFirstName("John");
-        userDto.setLastName("Rambo");
-        userDto.setPesel("4567890123");*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
 
         MvcResult result = mockMvc
@@ -385,12 +275,6 @@ class UserControllerTest {
                 .pesel("121212121212")
                 .build();
         ObjectMapper objectMapper = new ObjectMapper();
-/* todo
-        UserDto userDto = new UserDto();
-        userDto.setFirstName("John");
-        userDto.setLastName("Rambo");
-        userDto.setPesel("121212121212");
-*/
         String jsonRequest = objectMapper.writeValueAsString(userDto);
         MvcResult result = mockMvc
                 .perform(

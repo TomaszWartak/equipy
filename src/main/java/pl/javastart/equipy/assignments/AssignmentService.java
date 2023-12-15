@@ -69,13 +69,16 @@ public class AssignmentService {
         return assetWrapped.isEmpty();
     }
 
-    public AssignmentDto endOfAssignment( Long assignmentId ) {
-        Optional<Assignment> assignmentAssignedWrapped = assignmentRepository.findByIdAndEndNull( assignmentId );
+    public AssignmentDto finishAssignment(Long assignmentId ) {
+        Optional<Assignment> assignmentAssignedWrapped = assignmentRepository.findById( assignmentId );
         if (assignmentAssignedWrapped.isEmpty()) {
             throw new AssignmentNotFoundException();
         }
-        Assignment assignmentEnded = assignmentAssignedWrapped.get();
-        assignmentEnded.setEnd( dateTimeProvider.currentLocalDateTime() );
-        return AssignmentMapper.toAssignmentDto( assignmentRepository.save( assignmentEnded ));
+        Assignment assignmentFinished = assignmentAssignedWrapped.get();
+        if (assignmentFinished.getEnd()!=null) {
+            throw new InvalidAssignmentException("Przyporządkowanie jest już zakończone");
+        }
+        assignmentFinished.setEnd( dateTimeProvider.currentLocalDateTime() );
+        return AssignmentMapper.toAssignmentDto( assignmentRepository.save( assignmentFinished ));
     }
 }

@@ -19,7 +19,6 @@ public class Asset {
     @Column(unique = true)
     private String serialNumber;
     @ManyToOne
-    /* todo @JoinColumn(name = "category_id")*/
     private Category category;
     @OneToMany(mappedBy = "asset")
     private List<Assignment> assignments = new ArrayList<>();

@@ -266,10 +266,13 @@ class AssignmentControllerTest{
                 .andReturn();
     }
 
+    @Test
+    void finishAssignment__should_return_400__if_assignment_is_finished_already() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments/5/end" ) )
+                .andExpect( status().isBadRequest() )
+                .andReturn();
+    }
 
-    /*
-
-	•
-Kod odpowiedzi 400 Bad Request jeśli wyposażenie ma już przypisaną datę zwrotu (zostało już zwrócone).
-     */
 }
