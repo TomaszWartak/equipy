@@ -256,10 +256,20 @@ class AssignmentControllerTest{
                 .andExpect( content().json(jsonAssignmentsResponse) )
                 .andReturn();
     }
+
+    @Test
+    void finishAssignment__should_return_404__if_assignment_id_is_not_found() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup( new AssignmentController(assignmentService) ).build();
+        MvcResult result = mockMvc
+                .perform( post("/api/assignments/1000/end" ) )
+                .andExpect( status().isNotFound() )
+                .andReturn();
+    }
+
+
     /*
-	• Kod odpowiedzi 200 Ok z przypisaną datą zakończenia wypożyczenia.
-	    Przykładowa odpowiedź: 200OK"2018-10-19T11:53:16.330314"
-	• Kod odpowiedzi 404 Not Found, jeśli podane assignmentId nie wskazuje na żadne wypożyczenie,
+
+	•
 Kod odpowiedzi 400 Bad Request jeśli wyposażenie ma już przypisaną datę zwrotu (zostało już zwrócone).
      */
 }

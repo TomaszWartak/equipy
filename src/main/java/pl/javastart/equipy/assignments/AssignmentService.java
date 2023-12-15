@@ -71,6 +71,9 @@ public class AssignmentService {
 
     public AssignmentDto endOfAssignment( Long assignmentId ) {
         Optional<Assignment> assignmentAssignedWrapped = assignmentRepository.findByIdAndEndNull( assignmentId );
+        if (assignmentAssignedWrapped.isEmpty()) {
+            throw new AssignmentNotFoundException();
+        }
         Assignment assignmentEnded = assignmentAssignedWrapped.get();
         assignmentEnded.setEnd( dateTimeProvider.currentLocalDateTime() );
         return AssignmentMapper.toAssignmentDto( assignmentRepository.save( assignmentEnded ));
